@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Reservas — F.A.N.S</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/theme.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/reservas.css" />
+  <link rel="stylesheet" href="assets/css/dark-mode.css" />
+</head>
+<body> <!-- <- sin theme-light -->
+
+<header class="header" id="header">
+  <div class="container">
+    <div class="nav-brand">
+      <div class="logo">
+        <a href="index.html" class="logo-link">
+          <span class="logo-text">F.A.N.S</span>
+          <span class="logo-subtitle">Cooperativa</span>
+        </a>
+      </div>
+    </div>
+
+    <nav class="navigation" id="mainNav">
+      <ul class="nav-list">
+        <li><a class="nav-link" href="index.html#nosotros">Nosotros</a></li>
+        <li><a class="nav-link" href="index.html#servicios">Servicios</a></li>
+        <li><a class="nav-link" href="comunicados.html">Comunicados</a></li>
+        <li><a class="nav-link" href="reclamos.html">Reclamos</a></li>
+        <li><a class="nav-link" href="reservas.html">Reservas</a></li>
+        <li><a class="nav-link" href="dashboard.html">Mi panel</a></li>
+        <li><a class="nav-link" id="backofficeLink" href="backoffice.html" style="display:none;">Backoffice</a></li>
+      </ul>
+
+      <div class="nav-actions" style="margin-left:auto;display:flex;gap:.5rem;align-items:center">
+        <button id="themeToggle" class="btn btn-secondary" aria-label="Alternar tema">🌙</button>
+        <div id="nav-auth"></div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="res-page">   <!-- <== NUEVO wrapper -->
+  <main class="container" style="padding-top:1rem">
+    <h1 style="margin-bottom:.25rem">Solicitar reserva</h1>
+    <p class="muted" style="margin-top:0">Seleccioná fecha y uno o más intervalos de 30 minutos. Las franjas reservadas aparecen bloqueadas.</p>
+
+    <section class="card card--light" style="padding:1rem 1.25rem;margin-bottom:1rem">
+      <div class="grid grid-3">
+        <label class="field">
+          <span>Espacio</span>
+          <select id="espacio">
+            <option>Salón de eventos</option>
+            <option>Parrillero</option>
+            <option>Gimnasio</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Fecha</span>
+          <input type="date" id="resFecha">
+        </label>
+
+        <label class="field">
+          <span>Rango horario (seleccioná en la grilla)</span>
+          <div class="muted">Tocá los bloques de 30’ para armar el tramo.</div>
+        </label>
+      </div>
+
+      <div style="display:flex;gap:.5rem;margin:.75rem 0">
+        <button id="btnVer" class="btn btn-secondary">Ver disponibilidad</button>
+        <button id="btnSolicitar" class="btn btn-primary">Enviar solicitud</button>
+        <span id="selCount" class="muted" style="align-self:center">0 intervalos seleccionados</span>
+      </div>
+
+      <div id="slotsGrid" class="slots-grid"></div>
+      <small class="text-muted">Verde: libre — Rojo: ocupado — Borde: selección (debe ser un tramo contiguo).</small>
+    </section>
+
+    <section class="card card--light" style="padding:1rem 1.25rem">
+      <h2 style="margin-top:0">Mis solicitudes</h2>
+      <div id="misReservas" class="muted">Sin reservas.</div>
+    </section>
+  </main>
+</div> <!-- /res-page -->
+
+<script defer src="js/session.js"></script>
+<script defer src="js/config.js"></script>
+<script defer src="js/compat.js"></script>
+<script defer src="js/theme.js"></script>
+<script defer src="js/header.js"></script>
+<script defer src="js/reservas_ui.js"></script>
+</body>

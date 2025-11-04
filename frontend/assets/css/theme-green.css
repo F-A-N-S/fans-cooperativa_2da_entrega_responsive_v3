@@ -1,0 +1,19 @@
+/* Backoffice: ocultar navbar pública y solo dejar adminbar */
+body.backoffice header.site-header,
+body.backoffice .navbar:not(.adminbar),
+body.backoffice .site-header,
+body.backoffice .hero,
+body.backoffice .breadcrumbs,
+body.backoffice .menu-main { display:none !important; }
+
+/* Reservas: si algún script viejo inyecta agenda en el footer, ocultarla */
+.footer-scheduler, footer + .scheduler { display:none !important; }
+
+/* === Tema claro básico === */
+html.light, html.light body{ background:#f8fafc; color:#0f172a; }
+html.light .navbar{ background:#eaf1f7 !important; }
+html.light .card{ background:#ffffff !important; color:#0f172a; }
+html.light .title{ color:#0a0a0a; }
+html.light .btn.btn-primary{ background:#16a34a; border-color:#16a34a; color:#fff; }
+html.light .slot.free{ background:rgba(22,163,74,.12); }
+html.light .slot.reserved{ background:rgba(239,68,68,.15); color:#666; }

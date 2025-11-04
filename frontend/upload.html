@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Subir comprobante - F.A.N.S</title>
+<link href="assets/css/style.css" rel="stylesheet"/>
+<link href="/assets/img/favicon.ico" rel="icon"/>
+</head>
+<body>
+<header class="header" id="header">
+  <div class="container">
+    <div class="nav-brand">
+      <div class="logo">
+        <a href="index.html" class="logo-link">
+          <span class="logo-text">F.A.N.S</span>
+          <span class="logo-subtitle">Cooperativa</span>
+        </a>
+      </div>
+    </div>
+
+    <nav class="navigation" id="mainNav">
+      <ul class="nav-list">
+        <li><a class="nav-link" href="index.html#nosotros">Nosotros</a></li>
+        <li><a class="nav-link" href="index.html#servicios">Servicios</a></li>
+        <li><a class="nav-link" href="comunicados.html">Comunicados</a></li>
+        <li><a class="nav-link" href="reclamos.html">Reclamos</a></li>
+        <li><a class="nav-link" href="reservas.html">Reservas</a></li>
+        <li><a class="nav-link" href="dashboard.html">Mi panel</a></li>
+        <li><a class="nav-link" id="backofficeLink" href="backoffice.html" style="display:none;">Backoffice</a></li>
+      </ul>
+
+      <div class="nav-actions" style="margin-left:auto;display:flex;gap:.5rem;align-items:center">
+        <button id="themeToggle" class="btn btn-secondary" aria-label="Alternar tema">🌙</button>
+        <div id="nav-auth"></div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<section class="section">
+<div class="container" style="max-width: 860px;">
+<h1 class="auth-title">Subir comprobante</h1>
+<!-- Toolbar de “Actuando como” (solo admin la ve) -->
+<div class="muted" id="actingAs" style="display:none;margin:.25rem 0 .75rem"></div>
+<input id="id_residente" type="hidden"/>
+<p class="muted">Formatos permitidos: JPG, PNG, PDF (máx. 5 MB).</p>
+<form class="grid" id="uploadForm" style="grid-template-columns: 1fr 1fr; gap: 16px;">
+<div class="form-group">
+<label class="form-label" for="tipo">Tipo</label>
+<select class="form-input" id="tipo" required="">
+<option value="">Selecciona...</option>
+<option>Luz</option><option>Agua</option><option>Gas</option><option>Otros</option>
+</select>
+</div>
+<div class="form-group">
+<label class="form-label" for="fecha">Fecha</label>
+<input class="form-input" id="fecha" required="" type="date"/>
+</div>
+<div class="form-group">
+<label class="form-label" for="monto">Monto (opcional)</label>
+<input class="form-input" id="monto" min="0" placeholder="0.00" step="0.01" type="number"/>
+</div>
+<div class="form-group">
+<label class="form-label" for="archivo">Archivo</label>
+<input accept=".jpg,.jpeg,.png,.pdf" class="form-input" id="archivo" required="" type="file"/>
+</div>
+<div class="form-actions" style="grid-column: 1 / -1;">
+<button class="btn btn-primary" type="submit">Subir</button>
+<button class="btn" type="reset">Limpiar</button>
+<span class="muted" id="status" style="display:none;margin-left:8px;">Subiendo...</span>
+</div>
+</form>
+<hr class="divider"/>
+<h2 class="section-title" style="margin-top: 8px;">Mis comprobantes</h2>
+<table class="table" id="receiptsTable" style="width:100%; margin-top:1rem;">
+<thead><tr><th>Tipo</th><th>Fecha</th><th>Estado</th><th>Archivo</th></tr></thead>
+<tbody id="receiptsBody"><tr><td colspan="4">Cargando…</td></tr></tbody>
+</table>
+</div>
+</section>
+<footer class="footer">
+<div class="container">
+<div class="footer-content">
+<p class="footer-text">© 2025 F.A.N.S Cooperativa de Viviendas. Todos los derechos reservados.</p>
+<p class="footer-text">Hecho con ❤️ para la comunidad.</p>
+</div>
+</div>
+</footer>
+<script>
+    // ===== Helpers de token/API (acepta solo 64 hex; sino redirige a login)
+    const API_BASE = (window.API_BASE_URL || window.API || '/api/api.php');
+    function getToken64(){
+      let t = localStorage.getItem('fans_token') || localStorage.getItem('token') ||
+              new URLSearchParams(location.search).get('token') || '';
+      t = String(t||'');
+      return /^[a-f0-9]{64}$/i.test(t) ? t : '';
+    }
+    function requireToken(){
+      const t = getToken64();
+      if (!t) {
+        alert('Tu sesión expiró o es inválida. Volvé a iniciar sesión.');
+        localStorage.removeItem('fans_token'); localStorage.removeItem('token');
+        location.href = 'login.html?next=' + encodeURIComponent(location.pathname);
+        throw new Error('NO_TOKEN');
+      }
+      return t;
+    }
+    function authHeaders(){ return { Authorization: 'Bearer ' + requireToken() }; }
+    function apiUrl(qs){ const t=requireToken(); return API_BASE + (qs.includes('?')? qs+'&':'?') + 'token='+t; }
+
+    // ===== Estado =====
+    let gUser=null, gRid=null;
+    const qsIn = new URLSearchParams(location.search);
+
+    async function whoAmI(){
+      const r=await fetch(apiUrl('?action=me'), {headers:authHeaders()});
+      const j=await r.json(); if(!j?.ok) throw new Error('ME_FAIL'); gUser=j.user;
+    }
+    function pickRid(){
+      let v=prompt('ID de residente destino:', gRid||'');
+      if(!v) return; v=parseInt(v,10);
+      if(!Number.isFinite(v)||v<=0) return alert('ID inválido');
+      gRid=v; localStorage.setItem('as_residente_id', String(v));
+      document.getElementById('id_residente').value=gRid;
+      describeActingAs(); listReceipts();
+    }
+    async function resolveRid(){
+      if(gUser?.role==='residente'){ gRid=gUser.id; return; }
+      if(qsIn.get('id_residente')){ const q=parseInt(qsIn.get('id_residente'),10); if(Number.isFinite(q)&&q>0){ gRid=q; localStorage.setItem('as_residente_id', String(q)); return; } }
+      const st=parseInt(localStorage.getItem('as_residente_id')||'0',10); if(Number.isFinite(st)&&st>0){ gRid=st; return; }
+      pickRid();
+    }
+    function describeActingAs(){
+      const box=document.getElementById('actingAs');
+      if(gUser?.role==='admin'){
+        box.innerHTML=`Actuando como <b>residente #${gRid||'—'}</b> <button class="btn btn-outline" id="chgRid">Cambiar</button>`;
+        box.style.display=''; document.getElementById('chgRid').onclick=pickRid;
+      } else box.style.display='none';
+    }
+
+    async function listReceipts(){
+      const tb=document.getElementById('receiptsBody');
+      tb.innerHTML=`<tr><td colspan="4">Cargando…</td></tr>`;
+      let q='?action=list_receipts';
+      if(gUser?.role==='admin' && gRid) q += '&id_residente='+encodeURIComponent(gRid);
+      try{
+        const r=await fetch(apiUrl(q), {headers:authHeaders()});
+        const j=await r.json();
+        const rows=j?.rows || j?.receipts || [];
+        if(!rows.length){ tb.innerHTML=`<tr><td colspan="4">Sin resultados.</td></tr>`; return; }
+        const FILE_BASE=(API_BASE.replace(/\/api\/api\.php$/,'')+'/').replace(/\/+$/,'/');
+        tb.innerHTML = rows.map(x=>{
+          const f=x.Archivo ? ((x.Archivo.startsWith('http')?x.Archivo:(FILE_BASE+x.Archivo)).replace(/\/+/g,'/')) : '';
+          return `<tr><td>${x.Tipo??'-'}</td><td>${x.Fecha??'-'}</td><td>${x.Estado??'-'}</td><td>${x.Archivo?`<a href="${f}" target="_blank">Ver</a>`:''}</td></tr>`;
+        }).join('');
+      }catch(e){ tb.innerHTML=`<tr><td colspan="4">Error: ${e.message}</td></tr>`; }
+    }
+
+    async function onUpload(ev){
+      ev.preventDefault();
+      const f=document.getElementById('archivo').files[0];
+      if(!f) return alert('Seleccioná un archivo');
+      const fd=new FormData();
+      fd.set('tipo', document.getElementById('tipo').value);
+      fd.set('fecha', document.getElementById('fecha').value);
+      const m=document.getElementById('monto').value; if(m) fd.set('monto', m);
+      fd.set('archivo', f);
+      if(gRid) fd.set('id_residente', String(gRid));
+
+      const st=document.getElementById('status'); st.style.display='inline';
+      try{
+        const r=await fetch(apiUrl('?action=upload_receipt'), {method:'POST', headers:authHeaders(), body:fd});
+        const j=await r.json();
+        if(!j?.ok) throw new Error(j?.message || j?.error || 'No se pudo subir');
+        document.getElementById('uploadForm').reset();
+        listReceipts(); alert('Comprobante subido');
+      }catch(e){ alert('Error: '+e.message); }
+      finally{ st.style.display='none'; }
+    }
+
+    document.addEventListener('DOMContentLoaded', async ()=>{
+      requireToken();
+      await whoAmI();
+      await resolveRid();
+      document.getElementById('id_residente').value=gRid||'';
+      describeActingAs();
+      document.getElementById('uploadForm').addEventListener('submit', onUpload);
+      listReceipts();
+    });
+  </script>
+<script>
+  window.API = '/api/api.php';
+  window.fansAuthHeaders = function(){
+    const t = localStorage.getItem('fans_token') || localStorage.getItem('token');
+    return t ? { 'Authorization':'Bearer '+t } : {};
+  };
+</script>
+<script defer src="js/session.js"></script>
+<script defer src="js/config.js"></script>
+<script defer src="js/compat.js"></script>
+<script defer src="js/theme.js"></script>
+<script defer src="js/header.js"></script>
+</body>
+</html>

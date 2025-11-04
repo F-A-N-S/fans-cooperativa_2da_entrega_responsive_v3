@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <title>Backoffice — F.A.N.S</title>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+
+  <!-- Orden recomendado: theme primero (variables), luego estilos generales, luego específicos -->
+  <link rel="stylesheet" href="assets/css/theme.css"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <link rel="stylesheet" href="assets/css/backoffice.css"/>
+  <link rel="stylesheet" href="assets/css/dark-mode.css"/>
+</head>
+<body class="backoffice">
+
+<!-- HEADER ÚNICO -->
+<header class="header" id="header">
+  <div class="container">
+    <div class="nav-brand">
+      <div class="logo">
+        <a href="index.html" class="logo-link">
+          <span class="logo-text">F.A.N.S</span>
+          <span class="logo-subtitle">Cooperativa</span>
+        </a>
+      </div>
+    </div>
+
+    <nav class="navigation" id="mainNav">
+      <ul class="nav-list">
+        <li><a class="nav-link" href="index.html#nosotros">Nosotros</a></li>
+        <li><a class="nav-link" href="index.html#servicios">Servicios</a></li>
+        <li><a class="nav-link" href="comunicados.html">Comunicados</a></li>
+        <li><a class="nav-link" href="reclamos.html">Reclamos</a></li>
+        <li><a class="nav-link" href="reservas.html">Reservas</a></li>
+        <li><a class="nav-link" href="dashboard.html">Mi panel</a></li>
+        <!-- En esta página el link está “active”; header.js lo oculta si no sos admin -->
+        <li><a class="nav-link active" id="backofficeLink" href="backoffice.html">Backoffice</a></li>
+      </ul>
+
+      <div class="nav-actions" style="margin-left:auto;display:flex;gap:.5rem;align-items:center">
+        <button id="themeToggle" class="btn btn-secondary" aria-label="Alternar tema">🌙</button>
+        <div id="nav-auth"></div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- SUBHEADER LOCAL DEL BO (no sticky) -->
+<header class="bo-header">
+  <h1>Panel de Administración</h1>
+  <nav class="nav-actions">
+    <a href="index.html">Inicio</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="backoffice.html">Backoffice</a>
+    <button type="button" class="btn btn-danger" data-logout>Salir</button>
+  </nav>
+</header>
+
+<main class="container">
+  <!-- Pendientes -->
+  <section>
+    <h2>Usuarios pendientes</h2>
+    <div class="users-loading" style="display:none"></div>
+    <table class="table">
+      <thead>
+        <tr><th>ID</th><th>Nombre</th><th>Correo</th><th>Fecha</th><th>Acciones</th></tr>
+      </thead>
+      <tbody id="pendingUsersTbody">
+        <tr><td colspan="5">Cargando usuarios…</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Comprobantes -->
+  <section>
+    <h2>Comprobantes de pago</h2>
+    <div class="filters">
+      <label>Estado:
+        <select id="estadoFiltro">
+          <option>Todos</option><option>Pendiente</option><option>Aprobado</option><option>Rechazado</option>
+        </select>
+      </label>
+      <label>Residente (#ID):
+        <input id="residenteFiltro" placeholder="ID residente" type="number"/>
+      </label>
+      <button id="aplicarFiltros">Aplicar</button>
+    </div>
+    <table class="table">
+      <thead>
+        <tr><th>#</th><th>Tipo</th><th>Fecha</th><th>Monto</th><th>Estado</th><th>Archivo</th><th>Acción</th></tr>
+      </thead>
+      <tbody id="tbodyComprobantes">
+        <tr><td colspan="7">Cargando…</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Comunicados -->
+  <section>
+    <h2>Comunicados</h2>
+    <form class="form" id="boAnnForm" style="max-width:640px">
+      <label for="comTitle">Título</label>
+      <input id="comTitle" name="titulo" placeholder="Escribe el título del comunicado" required type="text"/>
+      <label for="comBody">Cuerpo / Descripción</label>
+      <textarea id="comBody" name="cuerpo" placeholder="Escribe el cuerpo del comunicado" required rows="6"></textarea>
+      <button id="btnPublicarCom" class="btn btn-primary" type="submit">Publicar</button>
+    </form>
+    <div id="comList">Cargando…</div>
+  </section>
+
+  <!-- Reclamos -->
+  <section>
+    <h2>Reclamos</h2>
+    <table class="table">
+      <thead><tr><th>Residente</th><th>Fecha</th><th>Asunto/Descripción</th><th>Estado</th><th>Acción</th></tr></thead>
+      <tbody id="boReclamosTBody"><tr><td colspan="5">Cargando…</td></tr></tbody>
+    </table>
+  </section>
+
+  <!-- Reservas (ADMIN) -->
+  <section class="section">
+    <h2>Reservas</h2>
+    <div class="table">
+      <table>
+        <thead><tr><th>#</th><th>Residente</th><th>Fecha</th><th>Hora</th><th>Estado</th><th>Acción</th></tr></thead>
+        <tbody id="boReservasTBody"><tr><td colspan="6">Cargando…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<div class="login-status" id="loginStatus" style="display:none"></div>
+
+<!-- Scripts (orden recomendado) -->
+<script defer src="js/session.js"></script>
+<script defer src="js/config.js"></script>
+<script defer src="js/compat.js"></script>
+<script defer src="js/theme.js"></script>
+<script defer src="js/header.js"></script>
+<script defer src="js/backoffice.js"></script>
+</body>
+</html>

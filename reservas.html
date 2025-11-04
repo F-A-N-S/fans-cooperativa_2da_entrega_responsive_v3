@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Reservas — FANS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/reservas.css">
+  <link rel="stylesheet" href="assets/css/theme.css">
+  <link rel="stylesheet" href="assets/css/dark-mode.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    .reservas-wrap{max-width:1100px;margin:1.25rem auto;padding:1rem}
+    .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.75rem;margin:.75rem 0}
+    .slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.5rem;margin-top:1rem}
+    .slot{border:1px solid #e5e7eb;border-radius:.6rem;padding:.6rem;text-align:center;cursor:pointer;user-select:none}
+    .slot.is-disabled{opacity:.45;cursor:not-allowed;background:#f3f4f6}
+    .slot.is-selected{outline:2px solid #16a34a;background:#16a34a11}
+    .actions{display:flex;gap:.5rem;align-items:center;margin-top:1rem}
+    .muted{opacity:.7}
+  </style>
+</head>
+<body class="page">
+  <header class="header" id="header">
+    <div class="container">
+      <div class="nav-brand">
+        <div class="logo">
+          <a class="logo-link" href="index.html">
+            <span class="logo-text">F.A.N.S</span>
+            <span class="logo-subtitle">Cooperativa</span>
+          </a>
+        </div>
+      </div>
+
+      <nav class="navigation" id="mainNav">
+        <ul class="nav-list">
+          <li><a class="nav-link" href="index.html#nosotros">Nosotros</a></li>
+          <li><a class="nav-link" href="index.html#servicios">Servicios</a></li>
+          <li><a class="nav-link" href="comunicados.html">Comunicados</a></li>
+          <li><a class="nav-link" href="reclamos.html">Reclamos</a></li>
+          <li><a class="nav-link is-active" href="reservas.html">Reservas</a></li>
+          <li><a class="nav-link" href="dashboard.html">Mi panel</a></li>
+          <li><a class="nav-link" href="backoffice.html" id="backofficeLink" style="display:none;">Backoffice</a></li>
+        </ul>
+        <div class="nav-actions" style="margin-left:auto;display:flex;gap:.5rem;align-items:center">
+          <button type="button" class="btn btn-secondary" id="themeToggle">Modo oscuro</button>
+          <div id="nav-auth"></div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="reservas-wrap">
+    <h1>Solicitar reserva</h1>
+    <p class="muted">Seleccioná fecha y uno o más intervalos de 30 minutos. Las franjas reservadas aparecen bloqueadas.</p>
+
+    <section class="filters">
+      <div>
+        <label>Espacio</label>
+        <select id="selEspacio">
+          <option value="Salón de eventos">Salón de eventos</option>
+          <option value="Barbacoa">Barbacoa</option>
+          <option value="Sala de reuniones">Sala de reuniones</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Día</label>
+        <select id="selDia"></select>
+      </div>
+      <div>
+        <label>Mes</label>
+        <select id="selMes">
+          <option value="01">Enero</option><option value="02">Febrero</option>
+          <option value="03">Marzo</option><option value="04">Abril</option>
+          <option value="05">Mayo</option><option value="06">Junio</option>
+          <option value="07">Julio</option><option value="08">Agosto</option>
+          <option value="09">Setiembre</option><option value="10">Octubre</option>
+          <option value="11">Noviembre</option><option value="12">Diciembre</option>
+        </select>
+      </div>
+      <div>
+        <label>Año (fijo)</label>
+        <input id="anioFijo" value="2025" readonly />
+      </div>
+    </section>
+
+    <section>
+      <div class="actions">
+        <button id="btnHoy" class="btn btn-ghost">Hoy</button>
+        <span id="fechaStr" class="muted"></span>
+      </div>
+      <div id="slots" class="slots" aria-live="polite"></div>
+      <div class="actions">
+        <button id="btnReservar" class="btn btn-primary">Enviar solicitud</button>
+        <span id="selInfo" class="muted">0 intervalos seleccionados</span>
+      </div>
+      <div id="msg" class="muted" style="margin-top:.5rem"></div>
+    </section>
+  </main>
+
+  <script defer src="js/config.js"></script>
+  <script defer src="js/session.js"></script>
+  <script defer src="js/compat.js"></script>
+  <script defer src="js/header.js"></script>
+  <script defer src="js/reservas.js"></script>
+</body>
+</html>

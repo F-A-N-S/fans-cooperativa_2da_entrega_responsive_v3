@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Comunicados - F.A.N.S</title>
+<link href="assets/css/style.css" rel="stylesheet"/>
+<link href="assets/css/dark-mode.css" rel="stylesheet"/>
+<link href="assets/img/favicon.ico" rel="icon"/><script>document.documentElement.classList.add('js');</script></head>
+<body class="light-mode">
+<header class="header" id="header">
+  <div class="container">
+    <div class="nav-brand">
+      <div class="logo">
+        <a href="index.html" class="logo-link">
+          <span class="logo-text">F.A.N.S</span>
+          <span class="logo-subtitle">Cooperativa</span>
+        </a>
+      </div>
+    </div>
+
+    <nav class="navigation" id="mainNav">
+      <ul class="nav-list">
+        <li><a class="nav-link" href="index.html#nosotros">Nosotros</a></li>
+        <li><a class="nav-link" href="index.html#servicios">Servicios</a></li>
+        <li><a class="nav-link" href="comunicados.html">Comunicados</a></li>
+        <li><a class="nav-link" href="reclamos.html">Reclamos</a></li>
+        <li><a class="nav-link" href="reservas.html">Reservas</a></li>
+        <li><a class="nav-link" href="dashboard.html">Mi panel</a></li>
+        <li><a class="nav-link" id="backofficeLink" href="backoffice.html" style="display:none;">Backoffice</a></li>
+      </ul>
+
+      <div class="nav-actions" style="margin-left:auto;display:flex;gap:.5rem;align-items:center">
+        <button id="themeToggle" class="btn btn-secondary" aria-label="Alternar tema">🌙</button>
+        <div id="nav-auth"></div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<section class="section"><div class="container">
+<h1>Comunicados</h1>
+<!-- se muestra solo si sos admin -->
+<div id="annList">Cargando…</div>
+</div></section>
+<footer class="footer">
+<div class="container">
+<div class="footer-content">
+<p class="footer-text">© 2025 F.A.N.S Cooperativa de Viviendas. Todos los derechos reservados.</p>
+<p class="footer-text">Hecho con ❤️ para la comunidad.</p>
+</div>
+</div>
+</footer>
+<script defer src="js/session.js"></script>
+<script defer src="js/config.js"></script>
+<script defer src="js/compat.js"></script>
+<script defer src="js/theme.js"></script>
+<script defer src="js/header.js"></script>
+<script defer="" src="js/auth.js"></script>
+<script defer="" src="js/comunicados.js"></script>
+<script>
+  window.API = '/api/api.php';
+  window.fansAuthHeaders = function(){
+    const t = localStorage.getItem('fans_token') || localStorage.getItem('token');
+    return t ? { 'Authorization':'Bearer '+t } : {};
+  };
+</script>
+<script src="js/main.js"></script>
+</body>
+</html>

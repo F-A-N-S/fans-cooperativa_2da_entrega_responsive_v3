@@ -1,0 +1,25 @@
+services:
+  web:
+    build: ./docker/php
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend:/var/www/html:rw
+      - uploads_data:/var/www/html/uploads
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: fans_cooperativa
+    # Si 3306 está ocupado en Windows, cambia a "3307:3306"
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+
+volumes:
+  uploads_data:
+  dbdata:

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Reclamos - F.A.N.S</title>
+<!-- Un solo CSS para evitar conflictos -->
+<link href="assets/css/style.css" rel="stylesheet"/>
+<link href="assets/img/favicon.ico" rel="icon"/>
+<link href="assets/css/dark-mode.css" rel="stylesheet"/><script>document.documentElement.classList.add('js');</script>
+</head>
+<body class="light-mode">
+<!-- Header simple -->
+<header class="header" id="header">
+  <div class="container">
+    <div class="nav-brand">
+      <div class="logo">
+        <a href="index.html" class="logo-link">
+          <span class="logo-text">F.A.N.S</span>
+          <span class="logo-subtitle">Cooperativa</span>
+        </a>
+      </div>
+    </div>
+
+    <nav class="navigation" id="mainNav">
+      <ul class="nav-list">
+        <li><a class="nav-link" href="index.html#nosotros">Nosotros</a></li>
+        <li><a class="nav-link" href="index.html#servicios">Servicios</a></li>
+        <li><a class="nav-link" href="comunicados.html">Comunicados</a></li>
+        <li><a class="nav-link" href="reclamos.html">Reclamos</a></li>
+        <li><a class="nav-link" href="reservas.html">Reservas</a></li>
+        <li><a class="nav-link" href="dashboard.html">Mi panel</a></li>
+        <li><a class="nav-link" id="backofficeLink" href="backoffice.html" style="display:none;">Backoffice</a></li>
+      </ul>
+
+      <div class="nav-actions" style="margin-left:auto;display:flex;gap:.5rem;align-items:center">
+        <button id="themeToggle" class="btn btn-secondary" aria-label="Alternar tema">🌙</button>
+        <div id="nav-auth"></div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- Contenido -->
+<section class="section dashboard-section">
+<div class="container" style="max-width:1000px">
+<h2 class="dashboard-title">Mis Reclamos</h2>
+<!-- Panel “Actuando como” (solo admin lo ve) -->
+<div class="muted" id="actingAs" style="display:none;margin:.25rem 0 1rem"></div>
+<input id="id_residente" type="hidden"/>
+<!-- Formulario -->
+<form class="form reclamos-form" id="claimForm" style="max-width:1000px;margin:.75rem 0 1.25rem">
+<div class="form-row reclamos-row">
+<div class="form-group">
+<label class="form-label" for="asunto">Asunto</label>
+<input class="form-input" id="asunto" maxlength="120" placeholder="Ej.: Fuga de agua en bloque B" required="" type="text"/>
+</div>
+<div class="form-group">
+<label class="form-label" for="descripcion">Descripción</label>
+<textarea class="form-textarea" id="descripcion" maxlength="1200" placeholder="Detallá qué sucede, dónde y cuándo se observó." required="" rows="6"></textarea>
+</div>
+</div>
+<div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap">
+<button class="btn btn-primary" id="enviarBtn" type="submit">Enviar</button>
+<small class="text-muted">Máx. 120 caracteres en Asunto y 1200 en Descripción.</small>
+</div>
+</form>
+<!-- Tabla -->
+<div class="table-wrap" style="margin-top:1rem">
+<table class="table" id="claimsTable">
+<thead>
+<tr>
+<th style="width:160px">Fecha</th>
+<th>Asunto</th>
+<th style="width:140px">Estado</th>
+</tr>
+</thead>
+<tbody id="claimsTBody">
+<tr><td class="text-muted" colspan="3">Cargando…</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<script>
+    // ========= Helpers de token/API (sin colisiones globales) =========
+    const API_BASE = (window.API_BASE_URL || window.API || '/api/api.php');
+
+    function getToken64(){
+      const qsTok = new URLSearchParams(location.search).get('token') || '';
+      let t = localStorage.getItem('fans_token') || localStorage.getItem('token') || qsTok || '';
+      t = String(t||'');
+      return /^[a-f0-9]{64}$/i.test(t) ? t : '';
+    }
+    function requireToken(){
+      const t = getToken64();
+      if (!t) {
+        alert('Tu sesión expiró. Iniciá sesión nuevamente.');
+        localStorage.removeItem('fans_token');
+        localStorage.removeItem('token');
+        location.href = 'login.html?next=' + encodeURIComponent(location.pathname);
+        throw new Error('NO_TOKEN');
+      }
+      return t;
+    }
+    function authHeaders(){ return { Authorization: 'Bearer ' + requireToken() }; }
+    function apiUrl(qs){ const t=requireToken(); return API_BASE + (qs.includes('?')? qs+'&':'?') + 'token='+t; }
+
+    // ========= Estado global mínimo =========
+    let gUser = null;     // { id, role, ... }
+    let gRid  = null;     // id_Residente efectivo (yo o “actuando como”)
+    const qs  = new URLSearchParams(location.search);
+
+    // ========= Utiles =========
+    function escapeHTML(s){ return String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+    // ========= Auth / Yo =========
+    async function whoAmI(){
+      const r = await fetch(apiUrl('?action=me'), { headers: authHeaders() });
+      const j = await r.json();
+      if (!j?.ok) throw new Error('No se pudo obtener el usuario');
+      gUser = j.user;
+    }
+
+    // ========= Resolver residente efectivo =========
+    function pickRid(){
+      let v = prompt('ID de residente destino:', gRid || '');
+      if (!v) return;
+      v = parseInt(v, 10);
+      if (!Number.isFinite(v) || v <= 0) return alert('ID inválido');
+      gRid = v;
+      localStorage.setItem('as_residente_id', String(v));
+      document.getElementById('id_residente').value = gRid;
+      describeActingAs();
+      listClaims();
+    }
+    async function resolveRid(){
+      if (gUser?.role === 'residente') { gRid = gUser.id; return; }
+      if (qs.get('id_residente')) {
+        const q = parseInt(qs.get('id_residente'), 10);
+        if (Number.isFinite(q) && q > 0) { gRid = q; localStorage.setItem('as_residente_id', String(q)); return; }
+      }
+      const st = parseInt(localStorage.getItem('as_residente_id') || '0', 10);
+      if (Number.isFinite(st) && st > 0) { gRid = st; return; }
+      pickRid();
+    }
+    function describeActingAs(){
+      const box = document.getElementById('actingAs');
+      if (gUser?.role === 'admin') {
+        box.innerHTML = `Actuando como <b>residente #${gRid || '—'}</b> <button class="btn btn-outline" id="chgRid">Cambiar</button>`;
+        box.style.display = '';
+        document.getElementById('chgRid').onclick = pickRid;
+      } else {
+        box.style.display = 'none';
+      }
+    }
+
+    // ========= Listado =========
+    async function listClaims(){
+      const tb = document.getElementById('claimsTBody');
+      tb.innerHTML = `<tr><td colspan="3" class="text-muted">Cargando…</td></tr>`;
+      try{
+        let q = '?action=reclamos_list';
+        // Si soy admin y tengo un residente target, filtro
+        if (gUser?.role === 'admin' && gRid) q += '&id_residente=' + encodeURIComponent(gRid);
+
+        const r = await fetch(apiUrl(q), { headers: authHeaders() });
+        const j = await r.json();
+        const items = Array.isArray(j?.items) ? j.items : [];
+        if (!items.length) { tb.innerHTML = `<tr><td colspan="3" class="text-muted">Sin datos.</td></tr>`; return; }
+        const rows = items.map(x => {
+          const fecha  = x.fecha ?? '-';
+          const asunto = escapeHTML(x.asunto ?? '');
+          const estado = escapeHTML(x.estado ?? 'abierto');
+          return `<tr><td>${fecha}</td><td>${asunto}</td><td>${estado}</td></tr>`;
+        }).join('');
+        tb.innerHTML = rows;
+      } catch (e) {
+        tb.innerHTML = `<tr><td colspan="3" class="text-danger">Error: ${escapeHTML(e.message)}</td></tr>`;
+      }
+    }
+
+    // ========= Crear reclamo =========
+    async function sendClaim(ev){
+      ev.preventDefault();
+      const asunto = document.getElementById('asunto').value.trim();
+      const descripcion = document.getElementById('descripcion').value.trim();
+      if (!asunto || !descripcion) return alert('Completá asunto y descripción.');
+
+      const body = new URLSearchParams({ asunto, descripcion });
+      if (gUser?.role === 'admin' && gRid) body.set('id_residente', String(gRid));
+
+      const btn = document.getElementById('enviarBtn');
+      btn.disabled = true;
+      try{
+        const r = await fetch(apiUrl('?action=reclamos_create'), {
+          method: 'POST',
+          headers: { ...authHeaders(), 'Content-Type': 'application/x-www-form-urlencoded' },
+          body
+        });
+        const j = await r.json();
+        if (!j?.ok) throw new Error(j?.message || j?.error || 'No se pudo crear el reclamo');
+        document.getElementById('claimForm').reset();
+        listClaims();
+        alert('Reclamo enviado');
+      } catch (e) {
+        alert('Error: ' + e.message);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // ========= UI básica =========
+    document.getElementById('mobileMenuToggle')?.addEventListener('click', () => {
+      document.querySelector('.navigation')?.classList.toggle('active');
+    });
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+      localStorage.removeItem('fans_token');
+      localStorage.removeItem('token');
+      location.href = 'login.html';
+    });
+
+    // ========= Init =========
+    document.addEventListener('DOMContentLoaded', async () => {
+      try{
+        requireToken();
+        await whoAmI();
+        await resolveRid();
+        document.getElementById('id_residente').value = gRid || '';
+        describeActingAs();
+
+        document.getElementById('claimForm').addEventListener('submit', sendClaim);
+        listClaims();
+      } catch(e){
+        // requireToken() ya redirige si falla
+        console.error(e);
+      }
+    });
+  </script>
+<script>
+  window.API = '/api/api.php';
+  window.fansAuthHeaders = function(){
+    const t = localStorage.getItem('fans_token') || localStorage.getItem('token');
+    return t ? { 'Authorization':'Bearer '+t } : {};
+  };
+</script>
+<footer class="footer">
+<div class="container">
+<div class="footer-content">
+<p class="footer-text">© 2025 F.A.N.S Cooperativa de Viviendas. Todos los derechos reservados.</p>
+<p class="footer-text">Hecho con ❤️ para la comunidad.</p>
+</div>
+</div>
+</footer>
+<script defer src="js/session.js"></script>
+<script defer src="js/config.js"></script>
+<script defer src="js/compat.js"></script>
+<script defer src="js/theme.js"></script>
+<script defer src="js/header.js"></script>
+<script src="js/main.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/reclamos.js"></script>
+</body>
+</html>

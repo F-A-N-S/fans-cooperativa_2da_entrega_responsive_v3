@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Registro - F.A.N.S Cooperativa</title>
+<link href="assets/css/style.css" rel="stylesheet"/>
+<link href="assets/css/dark-mode.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+</head>
+<body class="light-mode">
+<header class="header" id="header">
+  <div class="container">
+    <div class="nav-brand">
+      <div class="logo">
+        <a href="index.html" class="logo-link">
+          <span class="logo-text">F.A.N.S</span>
+          <span class="logo-subtitle">Cooperativa</span>
+        </a>
+      </div>
+    </div>
+
+    <nav class="navigation" id="mainNav">
+      <ul class="nav-list">
+        <li><a class="nav-link" href="index.html#nosotros">Nosotros</a></li>
+        <li><a class="nav-link" href="index.html#servicios">Servicios</a></li>
+        <li><a class="nav-link" href="comunicados.html">Comunicados</a></li>
+        <li><a class="nav-link" href="reclamos.html">Reclamos</a></li>
+        <li><a class="nav-link" href="reservas.html">Reservas</a></li>
+        <li><a class="nav-link" href="dashboard.html">Mi panel</a></li>
+        <li><a class="nav-link" id="backofficeLink" href="backoffice.html" style="display:none;">Backoffice</a></li>
+      </ul>
+
+      <div class="nav-actions" style="margin-left:auto;display:flex;gap:.5rem;align-items:center">
+        <button id="themeToggle" class="btn btn-secondary" aria-label="Alternar tema">🌙</button>
+        <div id="nav-auth"></div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<section class="auth-section">
+<div class="container">
+<div class="auth-container">
+<div class="auth-content">
+<h1 class="auth-title">Crear Tu Cuenta en F.A.N.S</h1>
+<p class="auth-subtitle">Únete a nuestra comunidad y comienza a gestionar tu hogar.</p>
+<form class="auth-form" id="registerForm">
+<div class="form-row">
+<div class="form-group">
+<label class="form-label" for="nombre">Nombre *</label>
+<input class="form-input" id="nombre" name="nombre" required="" type="text"/>
+</div>
+<div class="form-group">
+<label class="form-label" for="apellido">Apellido *</label>
+<input class="form-input" id="apellido" name="apellido" required="" type="text"/>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label" for="correo">Correo Electrónico *</label>
+<input class="form-input" id="correo" name="correo" required="" type="email"/>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label class="form-label" for="password">Contraseña *</label>
+<input class="form-input" id="password" name="password" required="" type="password"/>
+</div>
+<div class="form-group">
+<label class="form-label" for="confirm_password">Confirmar Contraseña *</label>
+<input class="form-input" id="confirm_password" name="confirm_password" required="" type="password"/>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label" for="fecha_ingreso">Fecha de Ingreso *</label>
+<input class="form-input" id="fecha_ingreso" name="fecha_ingreso" required="" type="date"/>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label class="form-label" for="cedula">Cédula</label>
+<input class="form-input" id="cedula" name="cedula" type="text"/>
+</div>
+<div class="form-group">
+<label class="form-label" for="telefono">Teléfono</label>
+<input class="form-input" id="telefono" name="telefono" type="tel"/>
+</div>
+</div>
+<button class="btn btn-primary btn-full" type="submit">Registrarse</button>
+<p class="message" id="registerMessage"></p>
+</form>
+<div class="auth-footer">
+<p>¿Ya tienes una cuenta? <a class="auth-link" href="login.html">Inicia Sesión aquí</a></p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<footer class="footer">
+<div class="container">
+<div class="footer-content">
+<p class="footer-text">© 2025 F.A.N.S Cooperativa de Viviendas. Todos los derechos reservados.</p>
+<p class="footer-text">Hecho con ❤️ para la comunidad.</p>
+</div>
+</div>
+</footer>
+<script src="js/main.js"></script>
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  window.API = '/api/api.php';
+  window.fansAuthHeaders = function(){
+    const t = localStorage.getItem('fans_token') || localStorage.getItem('token');
+    return t ? { 'Authorization':'Bearer '+t } : {};
+  };
+</script>
+<!-- scripts base (orden recomendado) -->
+<!-- Config/infra -->
+<script defer src="js/config.js"></script>
+<script defer src="js/compat.js"></script>
+<script defer src="js/session.js"></script>
+
+<!-- UI/tema/header -->
+<script defer src="js/theme.js"></script>
+<script defer src="js/header.js"></script>
+
+<!-- Página registro -->
+<script defer src="js/register.js"></script>
+</body>
+</html>

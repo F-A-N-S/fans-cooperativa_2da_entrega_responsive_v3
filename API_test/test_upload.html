@@ -1,0 +1,18 @@
+<!doctype html>
+<meta charset="utf-8">
+<h3>Test upload_receipt</h3>
+<form method="post" enctype="multipart/form-data" action="api.php?action=upload_receipt">
+  <p><label>Token (pegar aquí): <input name="__token" id="tok" style="width:520px"></label></p>
+  <p><label>id_residente: <input name="id_residente" value="1"></label></p>
+  <p><label>tipo: <input name="tipo" value="Luz"></label></p>
+  <p><label>fecha: <input name="fecha" value="2025-01-01"></label></p>
+  <p><label>archivo: <input type="file" name="archivo" required></label></p>
+  <button type="submit">Subir</button>
+</form>
+<script>
+  document.querySelector('form').addEventListener('submit', (e)=>{
+    const f=e.target, t=document.getElementById('tok').value.trim();
+    if(!t){ alert('Pegá el token primero'); e.preventDefault(); return; }
+    f.action = 'api.php?action=upload_receipt&token='+encodeURIComponent(t);
+  });
+</script>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Iniciar Sesión - F.A.N.S Cooperativa</title>
+<link href="assets/css/style.css" rel="stylesheet"/>
+<link href="assets/css/dark-mode.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+</head>
+<body class="light-mode">
+<header class="header" id="header">
+  <div class="container">
+    <div class="nav-brand">
+      <div class="logo">
+        <a href="index.html" class="logo-link">
+          <span class="logo-text">F.A.N.S</span>
+          <span class="logo-subtitle">Cooperativa</span>
+        </a>
+      </div>
+    </div>
+
+    <nav class="navigation" id="mainNav">
+      <ul class="nav-list">
+        <li><a class="nav-link" href="index.html#nosotros">Nosotros</a></li>
+        <li><a class="nav-link" href="index.html#servicios">Servicios</a></li>
+        <li><a class="nav-link" href="comunicados.html">Comunicados</a></li>
+        <li><a class="nav-link" href="reclamos.html">Reclamos</a></li>
+        <li><a class="nav-link" href="reservas.html">Reservas</a></li>
+        <li><a class="nav-link" href="dashboard.html">Mi panel</a></li>
+        <li><a class="nav-link" id="backofficeLink" href="backoffice.html" style="display:none;">Backoffice</a></li>
+      </ul>
+
+      <div class="nav-actions" style="margin-left:auto;display:flex;gap:.5rem;align-items:center">
+        <button id="themeToggle" class="btn btn-secondary" aria-label="Alternar tema">🌙</button>
+        <div id="nav-auth"></div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<section class="auth-section">
+<div class="container">
+<div class="auth-container">
+<div class="auth-content">
+<h1 class="auth-title">Bienvenido de Nuevo a F.A.N.S</h1>
+<p class="auth-subtitle">Ingresa tus credenciales para acceder a tu panel de control.</p>
+<!-- ÚNICO form -->
+<form action="/api/api.php?action=login" class="auth-form" id="loginForm" method="POST">
+<div class="form-group">
+<label class="form-label" for="email">Correo Electrónico</label>
+<input class="form-input" id="email" name="email" required="" type="email"/>
+</div>
+<div class="form-group">
+<label class="form-label" for="loginPassword">Contraseña</label>
+<input class="form-input" id="loginPassword" name="password" required="" type="password"/>
+</div>
+<div class="form-options">
+<label class="checkbox-label">
+<input id="remember" name="remember" type="checkbox"/>
+<span class="checkmark"></span>
+              Recordarme
+            </label>
+<a class="forgot-password" href="#">¿Olvidaste tu contraseña?</a>
+</div>
+<button class="btn btn-primary btn-full" type="submit">Iniciar Sesión</button>
+<p class="message" id="loginMessage"></p>
+</form>
+<div class="auth-footer">
+<p>¿No tienes una cuenta? <a class="auth-link" href="register.html">Regístrate aquí</a></p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- scripts -->
+<script>
+  window.API = '/api/api.php';
+  window.fansAuthHeaders = function(){
+    const t = localStorage.getItem('fans_token') || localStorage.getItem('token');
+    return t ? { 'Authorization':'Bearer '+t } : {};
+  };
+</script>
+<script defer src="js/config.js"></script>
+<script defer src="js/session.js"></script>
+<script defer src="js/compat.js"></script>
+<script defer src="js/theme.js"></script>
+<script defer src="js/header.js"></script>
+<script defer="" src="js/auth.js"></script>
+<script defer="" src="js/main.js"></script>
+</html>

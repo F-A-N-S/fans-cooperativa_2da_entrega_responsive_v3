@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <title>Mi Panel — F.A.N.S</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <!-- CSS base del proyecto -->
+  <link rel="stylesheet" href="assets/css/theme.css"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <link rel="stylesheet" href="assets/css/dark-mode.css"/>
+
+  <!-- Toques de estilo locales (sutiles) -->
+  <style>
+    .hero-title{font-size:clamp(1.6rem,3.5vw,2.2rem);text-align:center;margin:.25rem 0 .5rem}
+    .hero-sub{color:var(--muted);text-align:center;margin:0 0 1.2rem}
+    .card--soft{border-radius:16px;padding:1.1rem 1.25rem;box-shadow:var(--shadow-sm)}
+    .icon-badge{display:inline-flex;align-items:center;justify-content:center;
+      width:2.25rem;height:2.25rem;border-radius:50%;background:var(--surface-2);margin-right:.5rem;font-size:1.1rem}
+    .kv{display:grid;grid-template-columns:220px 1fr;gap:.4rem .75rem}
+    .kv .k{color:var(--muted)}
+    .cta-grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+    .cta-card{display:flex;flex-direction:column;gap:.5rem}
+    .cta-card h3{margin:.25rem 0}
+    .cta-card p{margin:0;color:var(--muted)}
+    /* Timeline */
+    .timeline{list-style:none;margin:0;padding:0;display:grid;gap:.5rem}
+    .tl-item{display:grid;grid-template-columns:auto 1fr;gap:.75rem;align-items:start;padding:.6rem .75rem;border:1px solid var(--border);border-radius:12px;background:var(--surface);box-shadow:var(--shadow-xs)}
+    .tl-emoji{font-size:1.1rem;line-height:1;display:inline-flex;align-items:center;justify-content:center;
+      width:1.9rem;height:1.9rem;border-radius:50%;background:var(--surface-2)}
+    .tl-title{font-weight:600}
+    .tl-meta{color:var(--muted);font-size:.9rem}
+    footer.footer{margin-top:2rem;padding:1.25rem 0;border-top:1px solid var(--border)}
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header" id="header">
+  <div class="container">
+    <div class="nav-brand">
+      <div class="logo">
+        <a href="index.html" class="logo-link">
+          <span class="logo-text">F.A.N.S</span>
+          <span class="logo-subtitle">Cooperativa</span>
+        </a>
+      </div>
+    </div>
+
+    <nav class="navigation" id="mainNav">
+      <ul class="nav-list">
+        <li><a class="nav-link" href="index.html#nosotros">Nosotros</a></li>
+        <li><a class="nav-link" href="index.html#servicios">Servicios</a></li>
+        <li><a class="nav-link" href="comunicados.html">Comunicados</a></li>
+        <li><a class="nav-link" href="reclamos.html">Reclamos</a></li>
+        <li><a class="nav-link active" href="dashboard.html">Mi panel</a></li>
+        <li><a class="nav-link" id="backofficeLink" href="backoffice.html" style="display:none">Backoffice</a></li>
+      </ul>
+      <div class="nav-actions" style="margin-left:auto;display:flex;gap:.5rem;align-items:center">
+        <button id="themeToggle" class="btn btn-secondary" aria-label="Alternar tema">🌙</button>
+        <div id="nav-auth"></div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="container" style="padding:1.25rem 0 1.75rem">
+  <h1 class="hero-title">¡Bienvenido, <span id="tituloNombre">Usuario</span>! ✨</h1>
+  <p class="hero-sub">Gestioná tu cuenta y accedé a todos los servicios de la cooperativa.</p>
+
+  <!-- Datos personales -->
+  <section class="card card--light card--soft" style="margin-bottom:1rem">
+    <h2 style="margin:.25rem 0 1rem">
+      <span class="icon-badge">🪪</span> Tus datos personales
+    </h2>
+    <div class="kv">
+      <div class="k">Nombre completo</div><div id="dpNombre">—</div>
+      <div class="k">Correo electrónico</div><div id="dpEmail">—</div>
+      <div class="k">Cédula</div><div id="dpCedula">—</div>
+      <div class="k">Teléfono</div><div id="dpTelefono">—</div>
+      <div class="k">Estado de cuenta</div><div id="dpEstado">—</div>
+    </div>
+  </section>
+
+  <!-- Accesos rápidos -->
+  <section class="cta-grid" style="margin-bottom:1.25rem">
+    <article class="card card--light card--soft cta-card">
+      <div><span class="icon-badge">💳</span><strong>Mis pagos</strong></div>
+      <h3>Subir comprobantes</h3>
+      <p>Subí y consultá tus comprobantes de pago.</p>
+      <button id="btnPagos" class="btn btn-primary" style="margin-top:auto">Acceder</button>
+    </article>
+
+    <article class="card card--light card--soft cta-card">
+      <div><span class="icon-badge">🧰</span><strong>Reclamos</strong></div>
+      <h3>Enviar reclamo</h3>
+      <p>Reportá incidencias o enviá sugerencias a la administración.</p>
+      <button id="btnReclamos" class="btn btn-primary" style="margin-top:auto">Acceder</button>
+    </article>
+
+    <article class="card card--light card--soft cta-card">
+      <div><span class="icon-badge">📣</span><strong>Comunicados</strong></div>
+      <h3>Ver comunicados</h3>
+      <p>Enterate de las últimas novedades de la cooperativa.</p>
+      <button id="btnComunicados" class="btn btn-primary" style="margin-top:auto">Acceder</button>
+    </article>
+  </section>
+
+  <!-- Actividad reciente -->
+  <section class="card card--light card--soft">
+    <h2 style="margin:.25rem 0 1rem"><span class="icon-badge">🕒</span> Actividad reciente</h2>
+    <ul id="timeline" class="timeline">
+      <li class="tl-item"><span class="tl-emoji">✨</span>
+        <div>
+          <div class="tl-title">Cargando actividad…</div>
+          <div class="tl-meta">Un momento</div>
+        </div>
+      </li>
+    </ul>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content" style="display:flex;gap:1rem;justify-content:space-between;flex-wrap:wrap">
+      <p class="footer-text">© <span id="year"></span> F.A.N.S Cooperativa de Viviendas</p>
+      <p class="footer-text">Hecho con ❤️ para la comunidad</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Scripts base del sitio -->
+<script defer src="js/session.js"></script>
+<script defer src="js/config.js"></script>
+<script defer src="js/compat.js"></script>
+<script defer src="js/theme.js"></script>
+<script defer src="js/header.js"></script>
+
+<!-- Lógica del panel -->
+<script>
+(function(){
+  const API = window.API || "/api/api.php";
+  const $ = (id)=>document.getElementById(id);
+  const authH = ()=>{
+    const t = (window.session && session.getToken && session.getToken())
+           || localStorage.getItem("fans_token") || localStorage.getItem("token");
+    return t ? { Authorization:"Bearer "+t } : {};
+  };
+
+  const g = (o,keys,d="—")=>{ for(const k of keys) if(o && o[k]!=null && o[k] !== "") return o[k]; return d; };
+  function fullName(u){
+    const n = g(u,["nombre","Nombre","name","first_name"],"");
+    const a = g(u,["apellido","Apellido","last_name"],"");
+    const uName = g(u,["username","usuario"],"");
+    const out = (n+" "+a).trim();
+    return out || uName || "Usuario";
+  }
+  function normEstado(u){
+    const raw = String(g(u,["status","estado","Estado","estatus"],"")).toLowerCase();
+    const ap = g(u,["aprobado","approved","is_approved","habilitado","activo"],undefined);
+    if (ap===true || ap===1 || ap==="1" || ap==="true") return "aprobado";
+    if (/rech/.test(raw)) return "rechazado";
+    if (/pend/.test(raw)) return "pendiente";
+    return raw || "—";
+  }
+  function nocache(u){ u.searchParams.set("_", Date.now()); return u; }
+  async function raw(u, opt={}){
+    const r = await fetch(u, {cache:"no-store",credentials:"include", ...opt});
+    const t = await r.text(); let j; try{ j=JSON.parse(t); }catch{ j={ok:r.ok,raw:t}; }
+    if(!r.ok || j?.ok===false) throw new Error(j?.error || t || ("HTTP "+r.status));
+    return j;
+  }
+  async function getOne(actions, params={}){
+    for(const a of actions){
+      try{
+        const u = nocache(new URL(API, location.origin));
+        u.searchParams.set("action", a);
+        Object.entries(params).forEach(([k,v])=>{ if(v!==undefined && v!=="") u.searchParams.set(k,v); });
+        return await raw(u, { headers:{...authH()} });
+      }catch(_){}
+    }
+    return null;
+  }
+  const ARR = j=>{
+    if(Array.isArray(j)) return j;
+    if(!j || typeof j!=="object") return [];
+    return j.rows||j.items||j.data||j.list||j.result||j.records||j.comunicados||j.reclamos||j.comprobantes||[];
+  };
+
+  // 1) Cargar usuario
+  async function fetchMe(){
+    try{
+      const u = nocache(new URL(API, location.origin)); u.searchParams.set("action","me");
+      const j = await raw(u, { headers:{...authH()} });
+      return j.user || j.me || j.data || null;
+    }catch(_){}
+    try{ if (window.session?.getProfile) return session.getProfile(); }catch(_){}
+    try{
+      const s = localStorage.getItem("fans_user") || localStorage.getItem("user") || localStorage.getItem("profile");
+      if (s) return JSON.parse(s);
+    }catch(_){}
+    return null;
+  }
+
+  async function fillUser(){
+    const me = await fetchMe(); if(!me) return;
+    const name = fullName(me);
+    $("tituloNombre").textContent = name;
+    $("dpNombre").textContent     = name;
+    $("dpEmail").textContent      = g(me,["email","correo"]);
+    $("dpCedula").textContent     = g(me,["cedula","Cedula","ci","dni","documento"]);
+    $("dpTelefono").textContent   = g(me,["telefono","tel","phone","celular"]);
+    $("dpEstado").textContent     = normEstado(me);
+  }
+
+  // 2) Botones
+  function wireButtons(){
+    $("btnPagos")?.addEventListener("click", ()=> location.href="upload.html");
+    $("btnReclamos")?.addEventListener("click", ()=> location.href="reclamos.html");
+    $("btnComunicados")?.addEventListener("click", ()=> location.href="comunicados.html");
+  }
+
+  // 3) Actividad reciente (comunicados + mis reclamos + mis comprobantes)
+  async function loadRecent(){
+    const TL = $("timeline"); if(!TL) return;
+    TL.innerHTML = `<li class="tl-item"><span class="tl-emoji">⌛</span><div><div class="tl-title">Cargando…</div><div class="tl-meta">—</div></div></li>`;
+
+    // Endpoints candidatos
+    const packs = {
+      comunicados: [
+        ["comunicados_listar","admin_comunicados_listar","avisos_listar","anuncios_listar","news_list","listar_comunicados"]
+      ],
+      reclamos: [
+        ["mis_reclamos_listar","reclamos_mios","reclamos_listar_usuario","reclamos_listar_mis"]
+      ],
+      comprobantes: [
+        ["mis_comprobantes","comprobantes_mios","comprobantes_listar_usuario"]
+      ]
+    };
+
+    async function fetchPack(p){ 
+      for(const a of p){ const r = await getOne(a, {all:1}); if(r){ const arr=ARR(r); if(arr.length) return arr; } } 
+      return []; 
+    }
+
+    try{
+      const [com, rec, comp] = await Promise.all([
+        fetchPack(packs.comunicados),
+        fetchPack(packs.reclamos),
+        fetchPack(packs.comprobantes),
+      ]);
+
+      // Normalizar a items timeline
+      const items = [];
+
+      com.slice(0,6).forEach(c=>{
+        items.push({
+          t:'comunicado',
+          emoji:'📣',
+          title: g(c,["Titulo","titulo","title"],"Comunicado"),
+          date:  g(c,["Fecha","fecha","fecha_publicacion","created_at","updated_at"],""),
+          href: "comunicados.html"
+        });
+      });
+
+      rec.slice(0,6).forEach(r=>{
+        const st = (g(r,["Estado","estado","status"],"")).toString().toLowerCase();
+        items.push({
+          t:'reclamo',
+          emoji: st.includes("aproba") ? "✅" : st.includes("recha") ? "⛔" : st.includes("proce") ? "🛠️" : st.includes("cerr") ? "🔒" : "🧰",
+          title: g(r,["Asunto","asunto","Titulo","titulo"],"Reclamo"),
+          date:  g(r,["Fecha","fecha","fecha_creacion","created_at"],""),
+          href: "reclamos.html"
+        });
+      });
+
+      comp.slice(0,6).forEach(c=>{
+        items.push({
+          t:'comprobante',
+          emoji:'💳',
+          title: (g(c,["Tipo","tipo"],"Comprobante")+" • "+g(c,["Monto","monto"],"")).trim(),
+          date:  g(c,["Fecha","fecha","created_at"],""),
+          href: "upload.html"
+        });
+      });
+
+      // Ordenar por fecha (desc)
+      items.sort((A,B)=> String(B.date||"").localeCompare(String(A.date||"")));
+      const cut = items.slice(0,8);
+
+      TL.innerHTML = cut.length ? cut.map(it=>`
+        <li class="tl-item">
+          <span class="tl-emoji">${it.emoji}</span>
+          <div>
+            <div class="tl-title">${it.title}</div>
+            <div class="tl-meta">${it.date || "—"} · <a href="${it.href}">ver</a></div>
+          </div>
+        </li>
+      `).join("") : `
+        <li class="tl-item"><span class="tl-emoji">✨</span><div><div class="tl-title">Sin actividad reciente</div><div class="tl-meta">Apenas haya novedades, aparecerán aquí.</div></div></li>
+      `;
+    }catch(_){
+      TL.innerHTML = `<li class="tl-item"><span class="tl-emoji">⚠️</span><div><div class="tl-title">No se pudo cargar la actividad</div><div class="tl-meta">Probá recargar la página.</div></div></li>`;
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", ()=>{
+    $("year").textContent = new Date().getFullYear();
+    wireButtons();
+    fillUser();
+    loadRecent();
+  });
+})();
+</script>
+</body>
+</html>

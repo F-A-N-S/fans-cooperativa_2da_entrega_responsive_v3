@@ -1,0 +1,17 @@
+
+<?php
+// Conexión ÚNICA (Docker)
+const DB_DSN  = mysql:host=db;port=3306;dbname=fans_cooperativa;charset=utf8mb4;
+const DB_USER = root;
+const DB_PASS = root;
+
+function pdo(): PDO {
+  static  = null;
+  if () return ;
+   = new PDO(DB_DSN, DB_USER, DB_PASS, [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+  ]);
+  return ;
+}
+ = pdo(); // compat

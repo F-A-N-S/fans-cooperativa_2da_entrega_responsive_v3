@@ -1,0 +1,53 @@
+
+.slots-grid{ display:grid; grid-template-columns: repeat(auto-fill,minmax(100px,1fr)); gap:10px; margin:10px 0 20px; }
+.slot{ padding:10px; border-radius:10px; border:1px solid var(--border); background:var(--card); }
+.slot.busy{ opacity:.5; cursor:not-allowed; text-decoration: line-through; }
+
+.statusbar { display: grid; grid-template-columns: repeat(48, 1fr); gap: 2px; margin: .75rem 0 1rem; }
+.statusbar .blk { height: 16px; border-radius: 3px; background: #22c55e33; }
+.statusbar .blk.busy { background: #ef4444cc; }
+.statusbar .blk.sel  { outline: 2px solid #22c55e; }
+
+.slots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin:12px 0 18px}
+.slot{padding:8px 10px;border-radius:10px;background:var(--card-bg, var(--section-bg-secondary));border:1px solid var(--border-color,#E0E0E0);box-shadow:0 1px 2px var(--shadow-color,rgba(0,0,0,.06));cursor:pointer}
+.slot.is-disabled{opacity:.5;cursor:not-allowed;text-decoration:line-through}
+.slot.is-selected{outline:2px solid var(--secondary-color,#4CAF50);outline-offset:1px}
+
+/* Grilla de 30' */
+.slots-grid{
+  display:grid;
+  grid-template-columns: repeat(8, minmax(110px,1fr));
+  gap:.5rem;
+}
+.slot{
+  border:1px solid var(--border, #2b2b2b);
+  border-radius:.6rem;
+  padding:.55rem .7rem;
+  font:500 0.95rem/1 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background:#0f172a; /* dark */
+  color:#e5e7eb;
+  cursor:pointer;
+  transition:transform .06s ease, box-shadow .12s ease, background .12s ease;
+}
+.slot.free { background: rgba(16,185,129,.12); }        /* verde suave */
+.slot.busy { background: rgba(244,63,94,.18); cursor:not-allowed; opacity:.85; }
+.slot.selected { outline:2px solid #86efac; box-shadow:0 0 0 2px rgba(134,239,172,.35) inset; }
+
+.res-list { list-style:none; padding:0; margin:.25rem 0 0; display:grid; gap:.35rem; }
+.res-list li{ display:flex; gap:.75rem; align-items:center; padding:.45rem .6rem; border-radius:.5rem; background:rgba(148,163,184,.08); }
+.res-list .pill{ padding:.15rem .5rem; border-radius:999px; font-size:.82rem; text-transform:capitalize; }
+.res-list .st-ok{ background:#166534; color:#d1fae5; }
+.res-list .st-bad{ background:#7f1d1d; color:#fee2e2; }
+.res-list .st-warn{ background:#854d0e; color:#fffbeb; }
+
+.slot{padding:.4rem .6rem;border-radius:.5rem;border:1px solid var(--border);margin:.25rem;cursor:pointer}
+.slot--free{background:transparent}
+.slot--pending{background:rgba(255,193,7,.12); border:1px dashed #ffc107}
+.slot--busy{background:rgba(220,53,69,.18); border-color:#dc3545; color:#dc3545}
+.slot--selected{outline:2px solid #3cb371}
+
+.slot{padding:.45rem .6rem;border:1px solid var(--border);border-radius:.55rem;cursor:pointer}
+.slot.free, .slot--free{background:transparent}
+.slot.pending, .slot--pending{background:rgba(255,193,7,.12);border-style:dashed;border-color:#ffc107}
+.slot.busy, .slot--busy{background:rgba(220,53,69,.18);border-color:#dc3545;color:#dc3545;cursor:not-allowed}
+.slot.selected, .slot--selected{outline:2px solid #22c55e}
