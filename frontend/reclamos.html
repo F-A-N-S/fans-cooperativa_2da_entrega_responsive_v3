@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Reclamos — F.A.N.S</title>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+</head>
+<body>
+
+<!-- 1) Cargar guard.js como módulo (evita "Cannot use import outside a module") -->
+<script type="module" src="js/guard.js" data-guard="user-only"></script>
+<header class="appbar">
+  <div class="container appbar-row">
+    <!-- Marca (sin enlace) -->
+    <div class="brand">
+      <img src="assets/img/logo.jpg" alt="F.A.N.S" />
+      <span class="brand-text">F.A.N.S <small>Cooperativa</small></span>
+    </div>
+
+    <!-- Acciones (igual a dashboard) -->
+    <nav class="app-actions">
+      <a href="dashboard.html" class="chip chip--primary is-current">Dashboard</a>
+      <button id="themeToggle" class="chip chip--icon" aria-label="Cambiar tema">🌙</button>
+      <button class="chip chip--ghost" type="button" data-logout>Salir</button>
+    </nav>
+  </div>
+
+  <!-- Toggle de tema (persistente) -->
+  <script>
+  (function(){
+    const KEY='fans_theme', html=document.documentElement;
+    function apply(t){
+      html.setAttribute('data-theme',t);
+      const b=document.getElementById('themeToggle');
+      if(b) b.textContent = t==='dark' ? '🌙' : '☀️';
+      try{ localStorage.setItem(KEY,t) }catch(_){}
+    }
+    apply(localStorage.getItem(KEY)||'dark');
+    document.addEventListener('click',e=>{
+      if(e.target && e.target.id==='themeToggle'){
+        apply(html.getAttribute('data-theme')==='dark' ? 'light' : 'dark');
+      }
+    });
+  })();
+  </script>
+</header>
+
+<main class="shell">
+  <header class="page-head">
+    <h1>Reclamos</h1>
+    <p class="muted">Reportá un problema y hacé seguimiento desde tu panel.</p>
+  </header>
+
+  <section class="grid-2">
+    <!-- Nueva tarjeta: crear reclamo -->
+    <form id="reclamoForm" class="card form" autocomplete="on">
+      <div class="card-head">
+        <h2>Nuevo reclamo</h2>
+      </div>
+
+      <div id="reclamoMsg" class="alert" style="display:none;"></div>
+
+      <div class="field">
+        <label for="asunto">Asunto</label>
+        <input id="asunto" name="asunto" type="text" placeholder="Ej: Fuga en cañería del piso 3" required />
+      </div>
+
+      <div class="field">
+        <label for="descripcion">Descripción</label>
+        <textarea id="descripcion" name="descripcion" rows="5" placeholder="Contanos qué pasó, dónde y cuándo…" required></textarea>
+      </div>
+
+      <div class="actions">
+        <button id="btnEnviar" class="btn-primary" type="submit">Enviar</button>
+      </div>
+    </form>
+
+    <!-- Nueva tarjeta: mis reclamos -->
+    <section class="card">
+      <div class="card-head">
+        <h2>Mis reclamos</h2>
+      </div>
+
+      <div id="claimsList" class="claims">
+        <!-- skeleton -->
+        <div class="claim skeleton"></div>
+        <div class="claim skeleton"></div>
+        <div class="claim skeleton"></div>
+      </div>
+    </section>
+  </section>
+</main>
+
+<script src="js/reclamos.js"></script>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <p class="footer-text">© 2025 F.A.N.S Cooperativa.</p>
+      <p class="footer-text">Hecho con ❤️ para la comunidad.</p>
+    </div>
+  </div>
+</footer>
+<script>
+  // Toggle de tema persistente (igual que en dashboard)
+  (function () {
+    const KEY = 'fans_theme', html = document.documentElement, btn = document.getElementById('themeToggle');
+    function apply(t){ html.setAttribute('data-theme', t); try{localStorage.setItem(KEY,t)}catch{}; if(btn) btn.textContent = t==='dark'?'🌙':'☀️'; }
+    apply(localStorage.getItem(KEY) || 'dark');
+    btn?.addEventListener('click', () => apply(html.getAttribute('data-theme')==='dark' ? 'light' : 'dark'));
+  })();
+
+  // Logout simple y consistente (borra token/caché y redirige a login)
+  (function () {
+    function delCookie(name){ document.cookie = name + '=; Max-Age=0; path=/'; }
+    document.addEventListener('click', (e) => {
+      if (e.target.matches('[data-logout]')) {
+        try {
+          delCookie('fans_token');               // por si quedó cookie
+          localStorage.removeItem('fans:user');  // por si guardás user
+          sessionStorage.clear();
+        } finally {
+          location.href = 'login.html';
+        }
+      }
+    });
+  })();
+</script>
+<script src="js/session.js"></script>
+</body>
+</html>

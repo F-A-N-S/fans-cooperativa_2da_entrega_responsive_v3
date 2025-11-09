@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Registro de horas — F.A.N.S</title>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+</head>
+<body>
+  <!-- Protección -->
+  <script src="js/guard.js" data-guard="user-only"></script>
+
+  <!-- Appbar consistente -->
+  <header class="appbar">
+    <div class="container appbar-row">
+      <div class="brand">
+        <img src="assets/img/logo.jpg" alt="F.A.N.S" />
+        <span class="brand-text">F.A.N.S <small>Cooperativa</small></span>
+      </div>
+      <nav class="app-actions">
+        <a href="dashboard.html" class="chip chip--primary">Dashboard</a>
+        <button id="themeToggle" class="chip chip--icon" aria-label="Cambiar tema">🌙</button>
+        <button class="chip chip--ghost" type="button" data-logout>Salir</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell">
+    <header class="page-head">
+      <h1>Registro de horas</h1>
+      <p class="muted">Cargá tus horas y consultá el historial.</p>
+    </header>
+
+    <section class="grid-2">
+      <!-- Cargar -->
+      <section class="card form" id="formCard">
+        <div class="card-head">
+          <h2>Cargar horas</h2>
+        </div>
+
+        <div id="msg" class="alert" style="display:none;"></div>
+
+        <div class="field">
+          <label for="fecha">Fecha</label>
+          <input id="fecha" type="date" required>
+        </div>
+
+        <div class="field two">
+          <div>
+            <label for="desde">Desde</label>
+            <input id="desde" type="time" step="1800" required>
+          </div>
+          <div>
+            <label for="hasta">Hasta</label>
+            <input id="hasta" type="time" step="1800" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="desc">Descripción</label>
+          <input id="desc" type="text" placeholder="Ej: limpieza, patrullaje, reunión…" />
+        </div>
+
+        <div class="actions">
+          <button id="btnGuardar" class="btn-primary" type="button">Guardar</button>
+        </div>
+      </section>
+
+      <!-- Lista -->
+      <section class="card">
+  <div class="card-head" style="display:flex;justify-content:space-between;align-items:center;gap:.75rem">
+    <h2 style="margin:0">Mis horas</h2>
+    <div id="hoursSummary" class="muted"></div>
+  </div>
+
+  <div id="hoursTable" class="table hours">
+    <!-- se inyecta por JS -->
+  </div>
+</section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <p class="footer-text">© 2025 F.A.N.S Cooperativa.</p>
+        <p class="footer-text">Hecho con ❤️ para la comunidad.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/session.js"></script>
+  <script>
+    // Tema persistente (igual que en otras páginas)
+    (function(){
+      const KEY='fans_theme', html=document.documentElement;
+      function apply(t){ html.setAttribute('data-theme',t); try{localStorage.setItem(KEY,t)}catch(_){} }
+      apply(localStorage.getItem(KEY)||'dark');
+      document.getElementById('themeToggle')?.addEventListener('click',()=>{
+        apply(html.getAttribute('data-theme')==='dark'?'light':'dark');
+      });
+    })();
+  </script>
+  <script src="js/horas.js"></script>
+</body>
+</html>

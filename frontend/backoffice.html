@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Backoffice — F.A.N.S</title>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    /* Ajustes suaves para que se vea igual que el resto */
+    .topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:10px;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--card-border,rgba(255,255,255,.06));background:var(--bg,rgba(0,0,0,.35));backdrop-filter:blur(8px)}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:700}
+    .brand img{width:28px;height:28px;border-radius:6px;object-fit:cover}
+    .nav-pills{display:flex;gap:8px;align-items:center}
+    .pill{padding:8px 12px;border-radius:12px;border:1px solid var(--card-border,rgba(255,255,255,.08));background:var(--card-bg,rgba(255,255,255,.04));}
+    .pill.is-active{background:var(--brand-weak,rgba(22,163,74,.12));border-color:rgba(22,163,74,.35)}
+    .theme-toggle{border:none;background:var(--card-bg,rgba(0,0,0,.25));padding:8px 10px;border-radius:12px;cursor:pointer}
+    .btn-ghost{border:1px solid var(--card-border,rgba(255,255,255,.12));background:var(--card-bg,rgba(255,255,255,.04));padding:8px 12px;border-radius:12px;}
+
+    .page{max-width:1100px;margin-inline:auto;padding:24px;display:grid;gap:18px}
+    .section-card{background:var(--card-bg,rgba(255,255,255,.04));border:1px solid var(--card-border,rgba(255,255,255,.08));border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .section-card header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--card-border,rgba(255,255,255,.08))}
+    .section-card .body{padding:16px}
+    .filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+    .table{width:100%;border-collapse:collapse}
+    .table th,.table td{padding:10px;border-bottom:1px solid var(--card-border,rgba(255,255,255,.08));vertical-align:top}
+    .table th{opacity:.8;text-align:left}
+    .badge{display:inline-block;padding:.2rem .5rem;border-radius:999px;border:1px solid rgba(255,255,255,.15);font-size:.8rem;opacity:.9}
+    .grid-2{display:grid;gap:16px;grid-template-columns:1fr 1fr}
+    @media (max-width:920px){.grid-2{grid-template-columns:1fr}}
+    .muted{opacity:.8}
+    .row-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .input, select{height:38px;border-radius:10px;padding:0 10px;border:1px solid var(--input-border,rgba(255,255,255,.12));background:var(--input-bg,rgba(0,0,0,.25));color:var(--text,#e7e7e7)}
+    textarea{width:100%;border-radius:10px;border:1px solid var(--input-border,rgba(255,255,255,.12));background:var(--input-bg,rgba(0,0,0,.25));color:var(--text);padding:10px}
+    .btn{height:38px;border-radius:10px;border:1px solid var(--card-border,rgba(255,255,255,.12));background:var(--card-bg,rgba(255,255,255,.04));color:var(--text);padding:0 12px;cursor:pointer}
+    .btn-primary{background:var(--brand,#16a34a);border:none;color:#fff}
+    .btn-danger{background:rgba(220,53,69,.9);border:none;color:#fff}
+    .empty{opacity:.7;padding:8px}
+  </style>
+</head>
+<body>
+
+  <!-- Guard (sólo admins) -->
+  <script defer src="js/guard.js" data-guard="admin-only"></script>
+
+  <header class="topbar">
+    <div class="brand">
+      <img src="assets/img/logo.jpg" alt="F.A.N.S" />
+      <span>F.A.N.S <small class="muted">Cooperativa</small></span>
+    </div>
+    <div class="nav-pills">
+      <a class="pill" href="dashboard.html">Dashboard</a>
+      <a class="pill" href="reservas.html">Reservas</a>
+      <a class="pill" href="reclamos.html">Reclamos</a>
+      <a class="pill" href="upload.html">Comprobantes</a>
+      <span class="pill is-active">Backoffice</span>
+      <button id="themeToggle" class="theme-toggle" title="Cambiar tema"><span id="themeIcon">🌙</span></button>
+      <button data-logout class="btn-ghost">Salir</button>
+    </div>
+  </header>
+
+  <main class="page">
+
+    <section class="section-card">
+      <header><h2>Usuarios pendientes</h2></header>
+      <div class="body">
+        <table class="table">
+          <thead><tr><th>ID</th><th>Nombre</th><th>Correo</th><th>Fecha</th><th>Acciones</th></tr></thead>
+          <tbody id="pendingUsersTbody"><tr><td colspan="5" class="empty">Cargando usuarios…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section-card">
+      <header><h2>Comprobantes de pago</h2></header>
+      <div class="body">
+        <div class="filters">
+          <label>Estado
+            <select id="estadoFiltro">
+              <option value="">Todos</option>
+              <option>Pendiente</option><option>Aprobado</option><option>Rechazado</option>
+            </select>
+          </label>
+          <label>Residente (#ID)
+            <input id="residenteFiltro" type="number" class="input" placeholder="ID residente" style="width:140px">
+          </label>
+          <button id="aplicarFiltros" class="btn">Aplicar</button>
+        </div>
+        <table class="table">
+          <thead><tr><th>#</th><th>Tipo</th><th>Fecha</th><th>Monto</th><th>Estado</th><th>Archivo</th><th>Admin / Rev.</th><th>Acción</th></tr></thead>
+          <tbody id="tbodyComprobantes"><tr><td colspan="8" class="empty">Cargando…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="grid-2">
+      <section class="section-card">
+        <header><h2>Comunicados</h2></header>
+        <div class="body">
+          <form id="boAnnForm" style="display:grid;gap:8px;margin-bottom:12px">
+            <input id="comTitle" name="titulo" class="input" placeholder="Título" required />
+            <textarea id="comBody" name="cuerpo" rows="5" placeholder="Cuerpo del comunicado" required></textarea>
+            <button class="btn-primary">Publicar</button>
+          </form>
+          <table class="table">
+            <thead><tr><th>Título</th><th>Fecha</th><th>Destinatario</th><th>Acción</th></tr></thead>
+            <tbody id="comList"><tr><td colspan="4" class="empty">Cargando…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <header><h2>Horas de trabajo</h2></header>
+        <div class="body">
+          <div class="filters">
+            <label>Mes
+              <input id="hoursMonth" type="month" class="input">
+            </label>
+            <label>Residente (#ID)
+              <input id="hoursRid" type="number" class="input" placeholder="ID">
+            </label>
+            <button id="hoursApply" class="btn">Filtrar</button>
+          </div>
+          <table class="table">
+            <thead><tr><th>ID</th><th>Residente</th><th>Fecha</th><th>Min</th><th>Descripción</th><th>Acción</th></tr></thead>
+            <tbody id="hoursTbody"><tr><td colspan="6" class="empty">Cargando…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <section class="section-card">
+      <header><h2>Reclamos</h2></header>
+      <div class="body">
+        <table class="table">
+          <thead><tr><th>ID</th><th>Residente</th><th>Fecha</th><th>Descripción</th><th>Estado</th><th>Acción</th></tr></thead>
+        <tbody id="boReclamosTBody"><tr><td colspan="6" class="empty">Cargando…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section-card">
+      <header><h2>Reservas</h2></header>
+      <div class="body">
+        <table class="table">
+          <thead><tr><th>ID</th><th>Residente</th><th>Fecha</th><th>Hora</th><th>Estado</th><th>Acción</th></tr></thead>
+          <tbody id="boReservasTBody"><tr><td colspan="6" class="empty">Cargando…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer style="padding:16px;text-align:center;opacity:.7">© 2025 F.A.N.S Cooperativa.</footer>
+
+  <!-- Tema -->
+  <script>
+    (function(){
+      const KEY='fans_theme';
+      const html=document.documentElement;
+      const btn=document.getElementById('themeToggle');
+      const icon=document.getElementById('themeIcon');
+      function apply(t){ html.setAttribute('data-theme',t); localStorage.setItem(KEY,t); if(icon) icon.textContent=t==='dark'?'🌙':'☀️'; }
+      apply(localStorage.getItem(KEY)||'dark');
+      btn && btn.addEventListener('click',()=>apply(html.getAttribute('data-theme')==='dark'?'light':'dark'));
+      document.querySelector('[data-logout]')?.addEventListener('click',()=>{ document.cookie='fans_token=;path=/;max-age=0;samesite=Lax'; location.href='admin_login.html'; });
+    })();
+  </script>
+
+  <!-- Lógica del backoffice -->
+  <script defer src="js/backoffice.js"></script>
+</body>
+</html>

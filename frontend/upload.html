@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Comprobantes — F.A.N.S</title>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+</head>
+<body>
+
+<!-- Guard (no module) -->
+<script src="js/guard.js" data-guard="user-only"></script>
+
+<header class="appbar">
+  <div class="container appbar-row">
+    <div class="brand">
+      <img src="assets/img/logo.jpg" alt="F.A.N.S" />
+      <span class="brand-text">F.A.N.S <small>Cooperativa</small></span>
+    </div>
+    <nav class="app-actions">
+      <a href="dashboard.html" class="chip chip--primary">Dashboard</a>
+      <button id="themeToggle" class="chip chip--icon" aria-label="Cambiar tema">🌙</button>
+      <button class="chip chip--ghost" type="button" data-logout>Salir</button>
+    </nav>
+  </div>
+</header>
+
+<main class="shell">
+  <header class="page-head">
+    <h1>Comprobantes</h1>
+    <p class="muted">Subí tus comprobantes de pago y consultá el estado.</p>
+  </header>
+
+  <section class="grid-2">
+    <form id="uploadForm" class="card form" enctype="multipart/form-data" autocomplete="on">
+      <div class="card-head"><h2>Nuevo comprobante</h2></div>
+      <div id="uploadMsg" class="alert" style="display:none;"></div>
+
+      <div class="field">
+        <label for="archivo">Archivo</label>
+        <input id="archivo" name="archivo" type="file" accept=".pdf,.jpg,.jpeg,.png" required>
+        <small class="muted">Formatos: PDF/JPG/PNG (máx. ~10 MB).</small>
+      </div>
+      
+      <div class="field">
+  <label for="tipo">Tipo</label>
+  <select id="tipo" name="tipo" required>
+    <option value="Otros" selected>Otros</option>
+    <option value="Luz">Luz</option>
+    <option value="Agua">Agua</option>
+    <option value="Gastos comunes">Gastos comunes</option>
+    <option value="Alquiler">Alquiler</option>
+    <option value="Mantenimiento">Mantenimiento</option>
+  </select>
+  <small class="muted">Elegí el tipo de comprobante.</small>
+</div>
+
+      <div class="field">
+        <label for="monto">Importe (opcional)</label>
+        <input id="monto" name="monto" type="number" step="0.01" placeholder="Ej: 3500.00">
+      </div>
+
+      <div class="field">
+        <label for="notas">Notas (opcional)</label>
+        <textarea id="notas" name="notas" rows="3" placeholder="Referencia, período, etc."></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="btn-primary" type="submit">Subir</button>
+      </div>
+    </form>
+
+    <section class="card">
+      <div class="card-head"><h2>Mis comprobantes</h2></div>
+      <div id="misComprobantes" class="tiles"></div>
+    </section>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <p class="footer-text">© 2025 F.A.N.S Cooperativa.</p>
+      <p class="footer-text">Hecho con ❤️ para la comunidad.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/session.js"></script>
+<script src="js/upload.js"></script>
+</body>
+</html>

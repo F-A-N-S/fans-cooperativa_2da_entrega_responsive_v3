@@ -1,0 +1,248 @@
+/* ===== Backoffice — FANS ===== */
+
+/* Reset suave + tokens */
+:root{
+  --bg:#ffffff;
+  --card:#ffffff;
+  --text:#23302a;
+  --muted:#6f7b76;
+  --primary:#4f7f5e;
+  --primary-600:#456e4e;
+  --primary-700:#3c5f44;
+  --border:#e6eaec;
+  --shadow:0 1px 2px rgba(0,0,0,.06), 0 6px 16px -8px rgba(0,0,0,.08);
+  --radius:12px;
+  --radius-sm:10px;
+  --gap:16px;
+  --gap-sm:10px;
+  --font: system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+}
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.45;
+}
+
+/* ===== Layout ===== */
+.bo-header{
+  padding:16px 20px;
+  display:flex; gap:12px; align-items:center; justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  background:#fafbfb;
+}
+.bo-header h1{
+  margin:0;
+  font-size:28px; font-weight:700; letter-spacing:.2px;
+  color:var(--primary-600);
+}
+.bo-header .nav-actions a{
+  margin-left:12px;
+  text-decoration:none;
+  color:var(--primary-700);
+  font-weight:600;
+}
+.bo-header .nav-actions a:hover{ text-decoration:underline; }
+
+.container{
+  max-width:1100px;
+  padding:24px 20px 60px;
+  margin:0 auto;
+}
+
+section{ margin:28px 0; }
+section > h2{
+  color:var(--primary-600);
+  font-size:22px; margin:0 0 10px;
+  border-left:4px solid var(--primary);
+  padding-left:8px;
+}
+
+/* ===== Tipos de mensajes ===== */
+.muted{ color:var(--muted); }
+.error{ color:#b42c2c; }
+.success{ color:#1f7a3e; }
+
+/* ===== Tarjetas y formularios ===== */
+.ann-card,
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:16px;
+}
+form.form, #boAnnForm{
+  display:grid;
+  grid-template-columns: 140px 1fr auto;
+  gap:10px;
+  align-items:start;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px;
+}
+#boAnnForm label{ align-self:center; color:#47504d; }
+input[type="text"], input[type="number"], select, textarea{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 12px;
+  font:inherit;
+  background:#fff;
+  outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+textarea{ min-height:96px; resize:vertical; }
+input:focus, select:focus, textarea:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(79,127,94,.15);
+}
+
+/* ===== Botones ===== */
+button, .btn{
+  appearance:none;
+  border:1px solid var(--primary);
+  background:var(--primary);
+  color:#fff; font-weight:600;
+  padding:8px 12px; border-radius:10px;
+  cursor:pointer;
+  transition:filter .15s ease, transform .03s ease;
+}
+button:hover, .btn:hover{ filter:brightness(.96); }
+button:active, .btn:active{ transform:translateY(1px); }
+
+.btn-outline{
+  background:#fff; color:var(--primary-700);
+  border-color:var(--primary-700);
+}
+.btn-approve, .btn-approve-user{
+  background:var(--primary);
+  border-color:var(--primary);
+  padding:6px 10px; border-radius:8px;
+  font-size:.95rem;
+}
+
+/* ===== Filtros ===== */
+.filters{
+  display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+  margin:.25rem 0 1rem;
+}
+.filters label{ color:#46524c; font-weight:600; }
+.filters input[type="number"]{ width:190px; }
+
+/* ===== Tablas ===== */
+.table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.table thead th{
+  background:#f6f8f7;
+  text-align:left; font-weight:700; color:#54635d;
+  padding:10px 12px; border-bottom:1px solid var(--border);
+}
+.table tbody td{
+  padding:10px 12px; border-bottom:1px solid var(--border);
+}
+.table tbody tr:hover{ background:#fafcfb; }
+.table tbody tr:last-child td{ border-bottom:none; }
+
+/* Mensajes dentro de tabla */
+.table td[colspan]{ color:var(--muted); }
+
+/* Enlaces dentro de tablas */
+.table a{ color:var(--primary-700); text-decoration:none; font-weight:600; }
+.table a:hover{ text-decoration:underline; }
+
+/* ===== Bloques específicos ===== */
+#boAnnList{ display:grid; gap:12px; margin-top:12px; }
+#boClaimsTBody td small{ color:var(--muted); }
+
+/* ===== Utilidades ===== */
+.hidden{ display:none !important; }
+.center{ text-align:center; }
+
+/* ===== Responsive ===== */
+@media (max-width: 880px){
+  .container{ padding:18px 14px 40px; }
+  form.form, #boAnnForm{
+    grid-template-columns: 1fr;
+  }
+  .filters{ gap:8px; }
+  .table{ font-size:.95rem; }
+}
+
+/* ===== Modo oscuro del SO (opcional) ===== */
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0f1512;
+    --card:#121b17;
+    --text:#e7eee9;
+    --muted:#aab4ae;
+    --primary:#6cb08a;
+    --primary-600:#63a27f;
+    --primary-700:#5b9474;
+    --border:#24332c;
+    --shadow:0 0 0 rgba(0,0,0,0);
+  }
+  .bo-header{ background:#0d1411; border-color:var(--border); }
+  .table thead th{ background:#0f1915; border-color:var(--border); }
+  input, select, textarea{ background:#0e1512; color:var(--text); }
+  .btn-outline{ background:#0f1512; }
+}
+#boAnnForm{ max-width:720px; display:grid; grid-template-columns:1fr; gap:10px; }
+#boAnnForm input[type="text"], #boAnnForm textarea{ width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--card); color:var(--text); }
+#boAnnForm button{ justify-self:start; padding:.6rem 1rem; border-radius:10px; background:var(--primary); color:white; border:0; }
+
+/* Oculta la navbar pública en backoffice */
+body.backoffice header.header{display:none !important;}
+
+/* === BADGES para estados === */
+.badge{display:inline-block;padding:.2rem .5rem;border-radius:999px;font-size:.85rem;font-weight:600;line-height:1;border:1px solid transparent}
+.badge.success{background:#1f8f4d1a;color:#22c55e;border-color:#16a34a}
+.badge.warning{background:#f59e0b1a;color:#f59e0b;border-color:#d97706}
+.badge.danger{background:#ef44441a;color:#ef4444;border-color:#dc2626}
+.badge.secondary{background:#64748b1a;color:#94a3b8;border-color:#475569}
+
+/* Tablas más prolijas en la sección Reservas */
+.section .table table{width:100%;border-collapse:separate;border-spacing:0;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.section .table th,.section .table td{padding:10px 12px;border-bottom:1px solid var(--border)}
+.section .table tr:last-child td{border-bottom:0}
+.section .table thead th{background:rgba(0,0,0,.03);text-align:left}
+
+/* === ESTADOS / INSIGNIAS === */
+.bo-badge{
+  display:inline-block; padding:4px 10px; border-radius:999px;
+  font-weight:700; font-size:.85rem; line-height:1; vertical-align:middle;
+  background:#eef1ef; color:#23302a; border:1px solid var(--border);
+}
+.bo-badge.bo-ok{ background:#0f3; color:#05250f; border-color:#0a3f1c21; }
+.bo-badge.bo-bad{ background:#ea4b4b22; color:#8b1212; border-color:#8b121221; }
+.bo-badge.bo-warn{ background:#ffb02022; color:#7a4a00; border-color:#7a4a0021; }
+
+/* Tarjetas cortas para comunicados */
+.bo-card{ background:var(--card); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); }
+.bo-card-h{ display:flex; justify-content:space-between; padding:12px 14px; border-bottom:1px solid var(--border); }
+.bo-card-b{ padding:12px 14px; }
+.bo-card-f{ padding:12px 14px; border-top:1px solid var(--border); }
+
+/* Quitar bandas grises en sección Reservas */
+.section{ background:var(--card); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); padding:12px; }
+.section .table{ background:transparent; border:0; box-shadow:none; }
+.section .table table{ width:100%; border-collapse:collapse; }
+
+.bo-badge{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:700;font-size:.85rem;line-height:1;
+  background:#eef1ef;color:#23302a;border:1px solid var(--border)}
+.bo-badge.bo-ok{background:#16a34a1a;color:#16a34a;border-color:#16a34a33}
+.bo-badge.bo-bad{background:#ef44441a;color:#ef4444;border-color:#ef444433}
+.bo-badge.bo-warn{background:#f59e0b1a;color:#f59e0b;border-color:#f59e0b33}

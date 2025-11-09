@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Comunicados — F.A.N.S</title>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+</head>
+<body>
+
+<script src="js/guard.js" data-guard="user-only"></script>
+<header class="header" id="header">
+  <div class="container">
+    <div class="nav-brand">
+      <div class="logo">
+        <a href="index.html" class="logo-link">
+          <span class="logo-text">F.A.N.S</span>
+          <span class="logo-subtitle">Cooperativa</span>
+        </a>
+      </div>
+    </div>
+    <nav class="navigation" id="mainNav">
+      <ul class="nav-list">
+        <li><a class="nav-link " href="dashboard.html">Dashboard</a></li>
+        <li><a class="nav-link " href="reservas.html">Reservas</a></li>
+        <li><a class="nav-link " href="reclamos.html">Reclamos</a></li>
+        <li><a class="nav-link " href="upload.html">Comprobantes</a></li>
+        <li><a class="nav-link " href="backoffice.html">Backoffice</a></li>
+      </ul>
+      <div class="nav-actions" style="margin-left:auto;display:flex;gap:.5rem;align-items:center">
+        <button id="themeToggle" class="btn btn-secondary" aria-label="Alternar tema">🌙</button>
+        <button type="button" class="btn btn-danger" data-logout>Salir</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="section">
+    <h1>Comunicados</h1>
+    <div id="comList" class="muted">Cargando…</div>
+  </section>
+</main>
+<script src="js/comunicados.js"></script>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <p class="footer-text">© 2025 F.A.N.S Cooperativa.</p>
+      <p class="footer-text">Hecho con ❤️ para la comunidad.</p>
+    </div>
+  </div>
+</footer>
+<script src="js/common.js"></script>
+<script src="js/session.js"></script>
+</body>
+</html>

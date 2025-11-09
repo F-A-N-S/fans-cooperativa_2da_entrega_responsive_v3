@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Acceso Administrador — F.A.N.S</title>
+
+  <!-- mismo CSS que login -->
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <style>
+    :root { --login-max: 420px; }
+    body { min-height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; }
+
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--card-border,rgba(255,255,255,.06));backdrop-filter:blur(8px)}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:700}
+    .brand img{width:28px;height:28px;border-radius:6px;object-fit:cover}
+    .theme-toggle{border:none;background:var(--card-bg,rgba(0,0,0,.25));padding:8px 10px;border-radius:10px;cursor:pointer}
+    .theme-toggle span{font-size:18px}
+
+    .login-wrap{display:grid;place-items:center;padding:24px}
+    .login-card{width:min(100%,var(--login-max));background:var(--card-bg,rgba(255,255,255,.04));border:1px solid var(--card-border,rgba(255,255,255,.08));border-radius:16px;padding:22px;box-shadow:var(--card-shadow,0 10px 30px rgba(0,0,0,.25))}
+    .login-card h1{margin:6px 0 16px;font-size:clamp(20px,3.5vw,28px)}
+    .field{display:grid;gap:6px;margin-bottom:14px}
+    .field label{font-size:14px;opacity:.9}
+    .field input{height:42px;border-radius:10px;padding:0 12px;width:100%;border:1px solid var(--input-border,rgba(255,255,255,.12));background:var(--input-bg,rgba(0,0,0,.25));color:var(--text,#e7e7e7)}
+    .btn-primary{width:100%;height:44px;border:none;border-radius:10px;cursor:pointer;background:var(--brand,#16a34a);color:#fff;font-weight:600;box-shadow:0 12px 30px rgba(22,163,74,.25)}
+    .btn-primary:disabled{opacity:.7;cursor:progress}
+    .helper{margin-top:10px;font-size:13px;opacity:.8;text-align:center}
+    .error{display:none;margin:0 0 12px;padding:10px;border-radius:10px;background:rgba(220,53,69,.12);color:#ffb3bb;border:1px solid rgba(220,53,69,.25);font-size:14px}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="assets/img/logo.jpg" alt="F.A.N.S" />
+      <span>F.A.N.S <small style="opacity:.7">Cooperativa</small></span>
+    </div>
+    <button id="themeToggle" class="theme-toggle" aria-label="Cambiar tema">
+      <span id="themeIcon">🌙</span>
+    </button>
+  </header>
+
+  <main class="login-wrap">
+    <form id="adminLoginForm" class="login-card" autocomplete="on">
+      <h1>Panel de Administración</h1>
+      <p style="opacity:.85;margin-top:-6px;margin-bottom:12px">Ingresá con tu usuario administrador.</p>
+
+      <div id="errorBox" class="error">Error</div>
+
+      <div class="field">
+        <label for="email">Correo electrónico</label>
+        <input id="email" name="email" type="email" inputmode="email" placeholder="admin@fans.test" required />
+      </div>
+
+      <div class="field">
+        <label for="password">Contraseña</label>
+        <input id="password" name="password" type="password" placeholder="••••••••" required />
+      </div>
+
+      <button id="submitBtn" class="btn-primary" type="submit">Entrar</button>
+    </form>
+  </main>
+
+  <footer style="padding:16px;text-align:center;opacity:.7;font-size:13px">© 2025 F.A.N.S Cooperativa.</footer>
+
+  <!-- Toggle de tema (igual que login) -->
+  <script>
+    (function(){
+      const KEY='fans_theme';
+      const html=document.documentElement;
+      const btn=document.getElementById('themeToggle');
+      const icon=document.getElementById('themeIcon');
+      function apply(t){ html.setAttribute('data-theme',t); localStorage.setItem(KEY,t); if(icon) icon.textContent=t==='dark'?'🌙':'☀️'; }
+      apply(localStorage.getItem(KEY)||'dark');
+      btn && btn.addEventListener('click',()=>apply(html.getAttribute('data-theme')==='dark'?'light':'dark'));
+    })();
+  </script>
+
+  <!-- Lógica de login de admin -->
+  <script defer src="js/admin_login.js"></script>
+  <script defer src="js/guard.js" data-guard="no-auth-admin"></script>
+</body>
+</html>

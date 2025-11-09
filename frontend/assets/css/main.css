@@ -1,0 +1,5 @@
+/* Aggregador para evitar 404/MIME al pedir main.css */
+@import url('style.css');
+@import url('reservas.css');
+@import url('theme.css');
+@import url('dark-mode.css');

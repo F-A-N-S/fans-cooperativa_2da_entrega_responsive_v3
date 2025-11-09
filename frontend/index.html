@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>F.A.N.S — Cooperativa</title>
+  <link rel="icon" href="assets/img/favicon.ico">
+  <link rel="stylesheet" href="assets/css/style.css"/>
+</head>
+<body class="landing">
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="assets/img/logo.jpg" alt="F.A.N.S" class="brand-icon">
+        <div class="brand-text">
+          <strong>F.A.N.S</strong><span>Cooperativa</span>
+        </div>
+      </div>
+      <nav class="actions">
+        <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema" aria-pressed="false">
+          <span class="sun" aria-hidden="true">☀️</span>
+          <span class="moon" aria-hidden="true">🌙</span>
+        </button>
+        <a class="btn btn-ghost" href="login.html">Ingresar</a>
+        <a class="btn btn-primary" href="register.html">Registrarse</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <video class="hero-video" id="heroVideo" playsinline muted autoplay loop>
+      <source src="assets/video/fans-video.mp4" type="video/mp4">
+    </video>
+    <div class="hero-scrim"></div>
+    <div class="container hero-content">
+      <h1>Tu Hogar, Nuestra Comunidad.</h1>
+      <p>Gestioná tu vida en la cooperativa con F.A.N.S: Facilidad, Amistad, Novedad y Seguridad.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="login.html">Entrar al sistema</a>
+        <a class="btn btn-ghost" href="#servicios">Ver servicios</a>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <section class="services">
+  <div class="services-head">
+    <h2>Nuestros Servicios Clave</h2>
+  </div>
+
+  <div class="services-grid">
+    <article class="service-card">
+      <div class="service-head">
+        <div class="service-icon">🗓️</div>
+        <h3>Reservas</h3>
+      </div>
+      <p>Reservá turnos para SUM, parrillero y otros espacios comunes, con validación del backoffice.</p>
+      <span class="service-pill">Función para residentes</span>
+    </article>
+
+    <article class="service-card">
+      <div class="service-head">
+        <div class="service-icon">🧾</div>
+        <h3>Comprobantes</h3>
+      </div>
+      <p>Cargá comprobantes de pago y consultá su estado (pendiente, aprobado o rechazado).</p>
+      <span class="service-pill">Seguimiento en línea</span>
+    </article>
+
+    <article class="service-card">
+      <div class="service-head">
+        <div class="service-icon">🛠️</div>
+        <h3>Reclamos</h3>
+      </div>
+      <p>Registrá reclamos con descripción y prioridad para una gestión más ágil por parte del administrador.</p>
+      <span class="service-pill">Con historial</span>
+    </article>
+
+    <article class="service-card">
+      <div class="service-head">
+        <div class="service-icon">📢</div>
+        <h3>Comunicaciones</h3>
+      </div>
+      <p>Recibí avisos y novedades relevantes de la cooperativa, centralizados en tu panel.</p>
+      <span class="service-pill">Avisos oficiales</span>
+    </article>
+
+    <article class="service-card">
+      <div class="service-head">
+        <div class="service-icon">⏱️</div>
+        <h3>Registro de horas</h3>
+      </div>
+      <p>Cargá y consultá tus horas de trabajo comunitario con totales por fecha y descripción.</p>
+      <span class="service-pill">Control mensual</span>
+    </article>
+  </div>
+</section>
+
+    <section id="nosotros" class="section about">
+      <div class="container about-grid">
+        <div class="about-text">
+          <h2>¿Quiénes Somos en F.A.N.S?</h2>
+          <p>Somos una cooperativa dedicada a la convivencia armónica, transparencia y bienestar colectivo.</p>
+          <p>Nuestro objetivo es ofrecer soluciones habitacionales de calidad y herramientas simples para la gestión de tu hogar.</p>
+        </div>
+        <figure class="about-media">
+          <img src="assets/img/logo.jpg" alt="Comunidad F.A.N.S">
+        </figure>
+      </div>
+    </section>
+
+    <section id="comunidad" class="section community">
+      <div class="container community-grid">
+        <figure class="community-media">
+          <img src="assets/img/fans-img-2.jpg" alt="Viviendas F.A.N.S">
+        </figure>
+        <div class="community-text">
+          <h2>F.A.N.S: Una Comunidad en Crecimiento</h2>
+          <p>Actividades, integración y participación para fortalecer lazos entre vecinos.</p>
+          <a href="register.html" class="btn btn-primary">Formá Parte de F.A.N.S</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="contacto" class="section contact">
+      <div class="container contact-grid">
+        <form class="contact-form" onsubmit="return false;">
+          <h3>Contáctanos</h3>
+          <label>Nombre Completo
+            <input type="text" placeholder="Tu nombre">
+          </label>
+          <label>Correo Electrónico
+            <input type="email" placeholder="tu@correo.com">
+          </label>
+          <label>Mensaje
+            <textarea rows="4" placeholder="Escribe tu mensaje..."></textarea>
+          </label>
+          <button class="btn btn-primary" type="submit">Enviar Mensaje</button>
+        </form>
+        <ul class="contact-info">
+          <li><strong>Nuestra Sede</strong><span>Av. Principal 123, Edificio Central</span></li>
+          <li><strong>Atención al Socio</strong><span>+1 (555) 123-4567</span></li>
+          <li><strong>Correo</strong><span>info@fans-cooperativa.com</span></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© 2025 F.A.N.S Cooperativa. Hecho con <span class="heart">♥</span> para la comunidad.</small>
+    </div>
+  </footer>
+
+  <!-- Mantén tus scripts habituales si los usás -->
+  <script src="js/session.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/header.js"></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Crear cuenta — F.A.N.S</title>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+
+  <style>
+    .form .row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+    @media (max-width: 720px){ .form .row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<header class="appbar">
+  <div class="container appbar-row">
+    <div class="brand">
+      <img src="assets/img/logo.jpg" alt="F.A.N.S"/>
+      <span class="brand-text">F.A.N.S <small>Cooperativa</small></span>
+    </div>
+    <nav class="app-actions">
+      <button id="themeToggle" class="chip chip--icon" aria-label="Cambiar tema">🌙</button>
+    </nav>
+  </div>
+  <script>
+    (function(){
+      const KEY='fans_theme', html=document.documentElement;
+      function apply(t){ html.setAttribute('data-theme',t);
+        const b=document.getElementById('themeToggle'); if(b) b.textContent=t==='dark'?'🌙':'☀️';
+        try{localStorage.setItem(KEY,t)}catch(_){}
+      }
+      apply(localStorage.getItem(KEY)||'dark');
+      document.addEventListener('click',e=>{
+        if(e.target && e.target.id==='themeToggle'){
+          apply(html.getAttribute('data-theme')==='dark'?'light':'dark');
+        }
+      });
+    })();
+  </script>
+</header>
+
+<main class="shell">
+  <header class="page-head">
+    <h1>Crear cuenta</h1>
+    <p class="muted">Tu solicitud será revisada por un administrador.</p>
+  </header>
+
+  <section class="card form" style="max-width:760px;margin:auto">
+    <div id="msg" class="alert" style="display:none"></div>
+
+    <form id="registerForm" autocomplete="off">
+      <div class="row">
+        <div class="field">
+          <label for="nombre">Nombre</label>
+          <input id="nombre" name="nombre" required/>
+        </div>
+        <div class="field">
+          <label for="apellido">Apellido</label>
+          <input id="apellido" name="apellido" required/>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="correo">Correo</label>
+          <input id="correo" name="correo" type="email" required/>
+        </div>
+        <div class="field">
+          <label for="telefono">Teléfono (opcional)</label>
+          <input id="telefono" name="telefono"/>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="usuario">Usuario (opcional)</label>
+          <input id="usuario" name="usuario" placeholder="ej: juanperez"/>
+        </div>
+        <div class="field">
+          <label for="pass">Contraseña</label>
+          <input id="pass" name="pass" type="password" minlength="6" required/>
+        </div>
+      </div>
+
+      <div class="actions" style="margin-top:1rem">
+        <button class="btn-primary" type="submit">Registrarme</button>
+      </div>
+    </form>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <p class="footer-text">© 2025 F.A.N.S Cooperativa.</p>
+      <p class="footer-text">Hecho con ❤️ para la comunidad.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/register.js"></script>
+</body>
+</html>
