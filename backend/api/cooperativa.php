@@ -220,18 +220,25 @@ switch ($action) {
   }
 
   case 'reclamos_estado': {
-    $aid = require_admin();
-    $r = json_decode(file_get_contents('php://input'), true) ?: [];
-    $id = (int)($r['id'] ?? 0);
-    $estado = trim((string)($r['estado'] ?? ''));
-    if (!$id || $estado==='') json_err(400,'BAD_REQUEST');
-    try {
-      db()->prepare("UPDATE reclamos SET Estado=?, id_Administrador=?, Fecha_Revision=NOW() WHERE Id_Reclamo=?")->execute([$estado,$aid,$id]);
-    } catch(Throwable $e) {
-      db()->prepare("UPDATE reclamos SET Estado=? WHERE Id_Reclamo=?")->execute([$estado,$id]);
-    }
-    json_ok();
+  $aid = require_admin();
+  $r = json_decode(file_get_contents('php://input'), true) ?: [];
+  $id = (int)($r['id'] ?? 0);
+  $estado = trim((string)($r['estado'] ?? ''));
+  if (!$id || $estado==='') json_err(400,'BAD_REQUEST');
+
+  $estado_db = strtolower($estado);
+  // Mapeo tolerante para ENUM
+  if ($estado_db === 'en progreso') $estado_db = 'en proceso';
+
+  try {
+    db()->prepare("UPDATE reclamos SET Estado=?, id_Administrador=?, Fecha_Revision=NOW() WHERE Id_Reclamo=?")
+      ->execute([$estado_db,$aid,$id]);
+  } catch(Throwable $e) {
+    db()->prepare("UPDATE reclamos SET Estado=? WHERE Id_Reclamo=?")
+      ->execute([$estado_db,$id]);
   }
+  json_ok();
+}
 
   case 'reclamos_eliminar': {
     require_admin();
@@ -265,22 +272,29 @@ switch ($action) {
   }
 
   case 'reservas_estado': {
-    $aid = require_admin();
-    $r = json_decode(file_get_contents('php://input'), true) ?: [];
-    $id = (int)($r['id'] ?? 0);
-    $estado = trim((string)($r['estado'] ?? ''));
-    if (!$id || $estado==='') json_err(400,'BAD_REQUEST');
+  $aid = require_admin();
+  $r = json_decode(file_get_contents('php://input'), true) ?: [];
+  $id = (int)($r['id'] ?? 0);
+  $estado = trim((string)($r['estado'] ?? ''));
+  if (!$id || $estado==='') json_err(400,'BAD_REQUEST');
 
-    $estado_db = strtolower($estado);
-    try {
-      db()->prepare("UPDATE reservas SET estado=?, id_Administrador=?, fecha_revision=NOW() WHERE id=?")
-        ->execute([$estado_db,$aid,$id]);
-    } catch (Throwable $e) {
-      db()->prepare("UPDATE reservas SET estado=?, id_Administrador=? WHERE id=?")
-        ->execute([$estado_db,$aid,$id]);
-    }
-    json_ok();
-  }
+  $estado_db = strtolower($estado);
+
+  $have_admin  = has_col('reservas','id_Administrador');
+  $have_review = has_col('reservas','fecha_revision');
+
+  $sql = "UPDATE reservas SET estado=?";
+  $par = [$estado_db];
+
+  if ($have_admin){  $sql .= ", id_Administrador=?"; $par[] = $aid; }
+  if ($have_review){ $sql .= ", fecha_revision=NOW()"; }
+
+  $sql .= " WHERE id=?";
+  $par[] = $id;
+
+  db()->prepare($sql)->execute($par);
+  json_ok();
+}
 
   case 'reservas_eliminar': {
     require_admin();
@@ -395,27 +409,35 @@ case 'mis_comprobantes': {  // alias opcional
 
   /* ---------- HORAS (residente) ---------- */
   case 'hours_create': {
-    $rid = require_residente();
-    $r = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+  $rid = require_residente();
+  $r = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 
-    $fecha = trim((string)($r['fecha'] ?? ''));   // dd/mm/aaaa o yyyy-mm-dd
-    $desde = trim((string)($r['desde'] ?? ''));   // HH:MM
-    $hasta = trim((string)($r['hasta'] ?? ''));   // HH:MM
-    $desc  = trim((string)($r['descripcion'] ?? ''));
+  $fecha = trim((string)($r['fecha'] ?? ''));
+  $desde = trim((string)($r['desde'] ?? ''));
+  $hasta = trim((string)($r['hasta'] ?? ''));
+  $desc  = trim((string)($r['descripcion'] ?? ''));
 
-    if (preg_match('/^(\d{2})[\/-](\d{2})[\/-](\d{4})$/', $fecha, $m)) { $fecha = "{$m[3]}-{$m[2]}-{$m[1]}"; }
-    if ($fecha==='' || $desde==='' || $hasta==='') json_err(400,'BAD_REQUEST',['message'=>'Faltan campos']);
-
-    $t0 = strtotime("$fecha $desde");
-    $t1 = strtotime("$fecha $hasta");
-    if ($t1 !== false && $t0 !== false && $t1 <= $t0) $t1 = strtotime("$fecha $hasta +1 day");
-    if ($t0===false || $t1===false || $t1 <= $t0) json_err(400,'BAD_REQUEST',['message'=>'Rango horario inválido']);
-
-    $min = (int) round(($t1 - $t0) / 60);
-    db()->prepare("INSERT INTO horas_trabajo (id_Residente, Fecha, Cantidad, Descripcion, Fecha_Registro) VALUES (?,?,?,?, NOW())")
-       ->execute([$rid, $fecha, $min, $desc]);
-    json_ok(['id'=>(int)db()->lastInsertId(), 'min'=>$min]);
+  // normaliza dd/mm/aaaa
+  if (preg_match('/^(\d{2})[\/-](\d{2})[\/-](\d{4})$/', $fecha, $m)) { $fecha = "{$m[3]}-{$m[2]}-{$m[1]}"; }
+  if ($fecha==='' || !preg_match('/^\d{2}:\d{2}$/',$desde) || !preg_match('/^\d{2}:\d{2}$/',$hasta)) {
+    json_err(400,'BAD_REQUEST',['message'=>'Fecha/hora inválida']);
   }
+
+  $dt0 = DateTime::createFromFormat('Y-m-d H:i', "$fecha $desde");
+  $dt1 = DateTime::createFromFormat('Y-m-d H:i', "$fecha $hasta");
+  if (!$dt0 || !$dt1) json_err(400,'BAD_REQUEST',['message'=>'Fecha/hora no parseable']);
+
+  if ($dt1 <= $dt0) $dt1->modify('+1 day'); // cruza medianoche
+  $diff = $dt0->diff($dt1);
+  $min  = (int)$diff->h*60 + (int)$diff->i;
+
+  if ($min <= 0) json_err(400,'BAD_REQUEST',['message'=>'El rango debe ser >= 1 minuto']);
+
+  db()->prepare("INSERT INTO horas_trabajo (id_Residente, Fecha, Cantidad, Descripcion, Fecha_Registro) VALUES (?,?,?,?, NOW())")
+     ->execute([$rid, $fecha, $min, $desc]);
+
+  json_ok(['id'=>(int)db()->lastInsertId(), 'min'=>$min]);
+}
 
   case 'hours_list': {
     $rid = require_residente();

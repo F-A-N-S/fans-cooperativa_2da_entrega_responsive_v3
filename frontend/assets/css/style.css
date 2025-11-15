@@ -1185,3 +1185,21 @@ body{ background: var(--bg); color: var(--text); }
 @media (max-width: 560px){
   .service-card{ flex-basis: 100%; max-width: 100%; min-height: 0; }
 }
+
+.mh-meta{ opacity:.8; margin:.25rem 0 1rem }
+.mh-row{
+  border:1px solid var(--card-border, rgba(255,255,255,.1));
+  background: var(--card-bg, rgba(255,255,255,.04));
+  border-radius:14px; padding:.75rem .9rem; margin:.5rem 0;
+}
+.mh-top{ display:flex; align-items:center; justify-content:space-between; gap:.5rem; }
+.mh-date{ font-weight:700; }
+.mh-dur{ font-weight:800; }
+.mh-desc{ opacity:.85; margin-top:.25rem; }
+
+/* opcional */
+#myHoursList { display: grid; gap: .5rem; }
+#myHoursList .t-row { display: grid; grid-template-columns: 120px 90px 1fr; gap: .5rem;
+  padding:.6rem .8rem; border:1px solid var(--card-border); border-radius:12px; background:var(--card-bg);
+}
+#myHoursList .cell.mins { font-variant-numeric: tabular-nums; }

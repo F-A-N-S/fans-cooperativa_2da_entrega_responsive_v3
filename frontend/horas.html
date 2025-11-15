@@ -68,14 +68,18 @@
 
       <!-- Lista -->
       <section class="card">
-  <div class="card-head" style="display:flex;justify-content:space-between;align-items:center;gap:.75rem">
-    <h2 style="margin:0">Mis horas</h2>
-    <div id="hoursSummary" class="muted"></div>
-  </div>
+<!-- Panel derecho -->
+<aside class="side">
+  <div class="card">
+    <div class="card-head" style="justify-content: space-between;">
+      <h3>Mis horas</h3>
+      <small id="hoursSummary" class="muted">—</small>
+    </div>
 
-  <div id="hoursTable" class="table hours">
-    <!-- se inyecta por JS -->
+    <!-- Tabla compacta ya estilizada en tu CSS (.table.hours) -->
+    <div id="hoursTable" class="table hours"></div>
   </div>
+</aside>
 </section>
   </main>
 
@@ -101,5 +105,6 @@
     })();
   </script>
   <script src="js/horas.js"></script>
+  <script src="js/common.js"></script>
 </body>
 </html>

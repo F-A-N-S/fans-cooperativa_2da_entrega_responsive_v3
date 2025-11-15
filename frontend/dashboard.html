@@ -438,19 +438,6 @@
 
   <footer>© 2025 F.A.N.S Cooperativa.</footer>
 
-  <!-- Tema -->
-  <script>
-    (function(){
-      const KEY='fans_theme';
-      const html=document.documentElement;
-      const btn=document.getElementById('themeToggle');
-      const icon=document.getElementById('themeIcon');
-      function apply(t){ html.setAttribute('data-theme',t); try{localStorage.setItem(KEY,t)}catch{}; if(icon) icon.textContent=t==='dark'?'🌙':'☀️'; }
-      apply(localStorage.getItem(KEY)||'dark');
-      btn && btn.addEventListener('click',()=>apply(html.getAttribute('data-theme')==='dark'?'light':'dark'));
-    })();
-  </script>
-
   <!-- Navegación de accesos rápidos -->
   <script>
     document.addEventListener('click', (e)=>{
@@ -464,5 +451,6 @@
 
   <!-- Datos del dashboard (debe usar fetch con credentials:'include') -->
   <script type="module" src="js/dashboard.js"></script>
+  <script src="js/common.js"></script>
 </body>
 </html>

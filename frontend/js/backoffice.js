@@ -1,4 +1,24 @@
 // frontend/js/backoffice.js  (IIFE, sin imports)
+
+// Duración legible a partir de minutos (estándar: "h m")
+function fmtDur(mins) {
+  mins = Math.max(0, parseInt(mins ?? 0, 10));
+  const h = Math.floor(mins / 60), m = mins % 60;
+  if (h && m) return `${h} h ${m} m`;
+  if (h)      return `${h} h`;
+  return `${m} m`;
+}
+
+// ── Helpers comunes ───────────────────────────────────────────────────────────
+function fmtDur(mins){
+  mins = Math.max(0, parseInt(mins ?? 0, 10));
+  const h = Math.floor(mins/60), m = mins % 60;
+  if (h && m) return `${h} h ${m} min`;
+  if (h)      return `${h} h`;
+  return `${m} min`;
+}
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
 (function(){
   const API = '../backend/api/cooperativa.php';
 
@@ -268,59 +288,63 @@ function fmtDur(mins) {
   return `${minutes}m`; // Si no hay horas, solo muestra los minutos: "30m"
 }
 
-async function loadHours() {
+// ── Horas (admin) ─────────────────────────────────────────────────────────────
+// ---------- Horas (admin) ----------
+async function loadHours(){
   const tbody = document.getElementById('hoursTbody');
   if (!tbody) return;
-  
-  const rid = document.getElementById('hoursRid')?.value.trim() || '';
-  const month = document.getElementById('hoursMonth')?.value || '';
-  
+
+  const ridEl   = document.getElementById('hoursRid');
+  const monthEl = document.getElementById('hoursMonth');
+
+  const rid   = ridEl   ? ridEl.value.trim() : '';
+  const month = monthEl ? monthEl.value : '';
+
   tbody.innerHTML = `<tr><td colspan="6" class="empty">Cargando…</td></tr>`;
-  
-  try {
-    const params = {action:'hours_admin_listar'};
+
+  const fmtMin = n => `${Number(n || 0)} min`;
+
+  try{
+    const params = { action:'hours_admin_listar' };
     if (rid) params.rid = rid;
-    if (month) params.month = month; // YYYY-MM
-    
-    // Llamada a la API
+    if (month) {
+      const [Y,M] = month.split('-');
+      if (Y && M) { params.anio = Y; params.mes = M; }
+    }
+
     const { items = [] } = await apiGet(params);
-    
+
     if (!items.length) {
       tbody.innerHTML = `<tr><td colspan="6" class="empty">Sin registros.</td></tr>`;
       return;
     }
 
     tbody.innerHTML = items.map(h => {
-      const mins = h.Min ?? h.Cantidad ?? 0;
-      const label = fmtDur(mins);  // Formatear los minutos en "1h 30m"
-      
-      const residente = h.id_Residente || h.residente_label || h.Nombre || h.Apellido || '—';  // Añadí otros campos posibles que podrían estar en los datos
+      const mins = (h.mins ?? h.Cantidad ?? 0);
+      const residente = (h.residente_id ?? h.id_Residente ?? '');
       return `
         <tr>
           <td>${h.id}</td>
           <td>${residente}</td>
-          <td>${h.Fecha || '—'}</td>
-          <td>${label} <small class="muted">(${mins} min)</small></td>
-          <td>${h.Descripcion || '—'}</td>
-          <td class="right">
-            <button class="btn btn-danger" data-hdel="${h.id}">Eliminar</button>
-          </td>
-        </tr>
-      `;
+          <td>${h.Fecha ?? ''}</td>
+          <td>${fmtMin(mins)}</td>
+          <td>${h.Descripcion ?? ''}</td>
+          <td><button class="btn btn-danger" data-hdel="${h.id}">Eliminar</button></td>
+        </tr>`;
     }).join('');
 
-    tbody.onclick = async (ev) => {
+    // borrar
+    tbody.onclick = async ev => {
       const d = ev.target.closest('[data-hdel]');
-      if (d) {
-        if (confirm('¿Eliminar registro de horas?')) {
-          await apiPost('hours_admin_eliminar', {id: +d.dataset.hdel});
-          loadHours();
-        }
-      }
+      if (!d) return;
+      if (!confirm('¿Eliminar registro de horas?')) return;
+      await apiPost('hours_admin_eliminar', { id: +d.dataset.hdel });
+      loadHours();
     };
-  } catch (error) {
-    console.error("Error al cargar horas:", error);  // Agregar log para ver el error
-    tbody.innerHTML = `<tr><td colspan="6" class="empty">Error cargando: ${error.message || error}</td></tr>`;
+
+  } catch (e) {
+    console.error('Error al cargar horas:', e);
+    tbody.innerHTML = `<tr><td colspan="6" class="empty">Error cargando.</td></tr>`;
   }
 }
 
